@@ -42,6 +42,7 @@ public class spellingGUI extends GUI implements ActionListener{
 			levels[i-1] = "Level "+i;
 		}
 		levelList = new JComboBox(levels);
+		levelList.addActionListener(this);
 		JPanel spellingPanel = new JPanel();
 		txtOutput.setEditable(false);
 		spellingPanel.setLayout(new BorderLayout());
@@ -79,7 +80,7 @@ public class spellingGUI extends GUI implements ActionListener{
 				txtOutput.setText("");
 				mediator.sendUpdateToGUI("MAIN"); // sends them back to the main menu GUI
 			}
-		} else {
+		} else if(e.getSource().equals(btnEnter)) {
 			if(iterations != 3 || modelController.getWordListSize() > iterations){
 				String userInput = txt.getText(); // gets what the user entered into the JTextField
 				txt.setText("");
@@ -120,6 +121,12 @@ public class spellingGUI extends GUI implements ActionListener{
 					}
 				}
 			}
+		}
+		else if(e.getSource().equals(levelList)){
+			modelController.setLevel((String)levelList.getSelectedItem());
+		}
+		else if (e.getSource().equals(btnStart)){
+			modelController.generateRandomWord();
 		}
 	}
 

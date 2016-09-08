@@ -19,6 +19,7 @@ public class newGame implements Command{
 	private boolean _review;
 	private int _iterations = 0;
 	private List<Integer> _wordIndex = new ArrayList<Integer>();
+	private String _level = "%Level 1";
 
 	public newGame(boolean reviewBoolean){
 		/*
@@ -42,7 +43,7 @@ public class newGame implements Command{
 		if(_words.size() == 0){
 			_GUI.setTxtField("No words to revise. \nPress back to return to main menu.");
 		}
-		generateRandomWord(); //begin the gui operation by generating a random word
+		//generateRandomWord(); //begin the gui operation by generating a random word
 	}
 
 	public void spell(){
@@ -130,6 +131,9 @@ public class newGame implements Command{
 		/*
 		 * checks the user input is valid and does not contain any non-letters
 		 */
+		if(userInput.equals("")){
+			return false;
+		}
 		char[] characters = userInput.toCharArray();
 		for(char c: characters){
 			if(!Character.isLetter(c)){
@@ -139,6 +143,10 @@ public class newGame implements Command{
 		return true;
 	}
 
+	protected void setLevel(String level){
+		_level = level;
+	}
+	
 	protected void whereToWrite(String condition){
 		/*
 		 * writes to a file depending on the condition, it will append the word to mastered/faulted/

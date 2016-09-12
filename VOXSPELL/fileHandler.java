@@ -123,4 +123,29 @@ public class fileHandler {
 		}
 		return words;
 	}
+	
+	public List<String> getWordList(String fileName, String level) { // My solution of having an overloaded method to deal with levels
+		
+		String word = null;
+		List<String> words = new ArrayList<String>();
+		FileReader fileReader;
+		try {
+
+			fileReader = new FileReader(fileName);
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+			while(!(word = bufferedReader.readLine()).equals(level)) {
+			}   
+			
+			word = bufferedReader.readLine();
+			while(word.split(" ").length == 1 && !word.equals(null)) {
+				words.add(word);
+				word = bufferedReader.readLine();
+			}
+			
+			bufferedReader.close();         
+		} catch (Exception e){
+		}
+		return words;
+	}
 }

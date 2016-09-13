@@ -20,6 +20,7 @@ public class newGame implements Command{
 	private int _iterations = 0;
 	private List<Integer> _wordIndex = new ArrayList<Integer>();
 	protected String _level = "%Level 1";
+	protected int _wordsCorrect = 0;
 
 	public newGame(boolean reviewBoolean){
 		/*
@@ -30,6 +31,8 @@ public class newGame implements Command{
 	}
 
 	public void execute() {
+		this._wordsCorrect = 0;
+		this._iterations = 0;
 		/*
 		 * This is signature method from the Command interface, and the execute method gets called
 		 * Specifically, it is executing the model view so the spellingGUI can begin.
@@ -45,7 +48,7 @@ public class newGame implements Command{
 		if(_words.size() == 0){
 			_GUI.setTxtField("No words to revise. \nPress back to return to main menu.");
 		}
-		generateRandomWord(); //begin the gui operation by generating a random word
+		//generateRandomWord(); begin the gui operation by generating a random word
 	}
 
 	public void spell(){
@@ -95,6 +98,7 @@ public class newGame implements Command{
 		 * this function merely checks that the user answer is equal to the current word being assessed
 		 */
 		if(answer.toLowerCase().equals(_currentWord.toLowerCase())){
+			_wordsCorrect++;
 			return true;
 		} else {
 			return false;

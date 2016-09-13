@@ -36,7 +36,8 @@ public class spellingGUI extends GUI implements ActionListener{
 	private JButton btnBack = new JButton("Back");
 	protected JButton btnRelisten = new JButton("Relisten");
 	private JComboBox<String> festivalSelect;
-	
+	private JButton btnStart = new JButton("Start");
+
 
 	public spellingGUI(GUIMediator m) {
 		// associating this GUI with a mediator to notify changes.
@@ -46,20 +47,21 @@ public class spellingGUI extends GUI implements ActionListener{
 	public JPanel creatingGUI() {
 
 		JPanel spellingPanel = new JPanel();
-		
+
 		txtOutput.setEditable(false);
 		spellingPanel.setLayout(new BorderLayout());
 		btnEnter.addActionListener(this); 
 		btnBack.addActionListener(this);
 		btnRelisten.addActionListener(this);
+		btnStart.addActionListener(this);
 		txt.setPreferredSize(new Dimension(200, 40));
 		JScrollPane scroll = new JScrollPane(txtOutput);
 		scroll.setPreferredSize(new Dimension(300, 200));
-		
+
 		JPanel firstPanel = new JPanel();
 		firstPanel.setLayout(new BorderLayout());
 		firstPanel.add(scroll);
-		
+
 		JPanel secondPanel = new JPanel();
 		secondPanel.setLayout(new BoxLayout(secondPanel, BoxLayout.Y_AXIS));
 		String[] levels = new String[11];
@@ -72,35 +74,37 @@ public class spellingGUI extends GUI implements ActionListener{
 		btnRelisten.setAlignmentX(Component.CENTER_ALIGNMENT);
 		secondPanel.add(festivalSelect);
 		secondPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-		
+
 		secondPanel.add(btnRelisten);
+		btnRelisten.setEnabled(false);
 		secondPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 		secondPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-		
+
 		JLabel correctLabel = new JLabel("Words Correct");
 		correctLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		secondPanel.add(correctLabel);
-		
-        JProgressBar progressBar = new JProgressBar(0, 100);
-        progressBar.setStringPainted(true);
-        progressBar.setString("");
-        secondPanel.add(progressBar);
-		
+
+		JProgressBar progressBar = new JProgressBar(0, 100);
+		progressBar.setStringPainted(true);
+		progressBar.setString("");
+		secondPanel.add(progressBar);
+
 		JPanel thirdPanel = new JPanel();
 		thirdPanel.setLayout(new BorderLayout());
 		thirdPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		thirdPanel.add(txt, BorderLayout.CENTER);
 		thirdPanel.add(btnEnter, BorderLayout.EAST);
-		
+
 		JPanel fourthPanel = new JPanel();
 		fourthPanel.setLayout(new BoxLayout(fourthPanel, BoxLayout.X_AXIS));
 		btnBack.setPreferredSize(new Dimension(20, 20));
 		fourthPanel.add(btnBack);
-		
+		fourthPanel.add(btnStart);
+
 		spellingPanel.add(firstPanel, BorderLayout.LINE_START);
 		spellingPanel.add(secondPanel, BorderLayout.EAST);
 		spellingPanel.add(thirdPanel, BorderLayout.SOUTH);
-		
+
 		spellingPanel.add(fourthPanel, BorderLayout.NORTH);
 		return spellingPanel;
 	}
@@ -112,6 +116,8 @@ public class spellingGUI extends GUI implements ActionListener{
 			int PromptResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to leave this session?", "Confirmation", 
 					JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
 			if(PromptResult == 0){
+				btnStart.setEnabled(true);
+				btnRelisten.setEnabled(false);
 				iterations  = 0;
 				txtOutput.setText("");
 				mediator.sendUpdateToGUI("MAIN"); // sends them back to the main menu GUI
@@ -153,19 +159,30 @@ public class spellingGUI extends GUI implements ActionListener{
 					if(iterations == 10 || modelController.getWordListSize() < iterations){
 						iterations  = 0;
 						txtOutput.setText("");
-						mediator.sendUpdateToGUI("MAIN");
+						if(modelController._wordsCorrect > 8 && modelController._level != "%Level 11"){
+							int PromptResult = JOptionPane.showConfirmDialog(null, "Would you like to move up in level?", "Confirmation", 
+									JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+							if(PromptResult == 0){
+								modelController.setLevel("%Level "+(Integer.parseInt(modelController._level.split(" ")[1])+1));
+								modelController.execute();
+								btnStart.setEnabled(true);
+							}
+						}
 					}
 				}
 			}
 		} else if (e.getSource() == btnRelisten){
 			modelController.spell();
+		} else if (e.getSource() == btnStart){
+			modelController.generateRandomWord();
+			btnStart.setEnabled(false);
 		}
 	}
 
 	public void resetSpelling(){
 		count = 0;
 	}
-	
+
 	protected boolean promptUserToRelisten(){
 		// this will prompt the user if they want to relisten to the word.
 		int PromptResult = JOptionPane.showConfirmDialog(null, "Would you like to listen to the spelling of the word?", "Listen to Spelling",
@@ -176,11 +193,11 @@ public class spellingGUI extends GUI implements ActionListener{
 			return false;
 		}
 	}
-	
+
 	protected void setTxtField(String txtToSet){
 		txtOutput.setText(txtToSet);
 	}
-	
+
 	protected void appendTxtField(String txtToAppend){
 		txtOutput.append(txtToAppend);
 	}

@@ -117,7 +117,7 @@ public class spellingGUI extends GUI implements ActionListener{
 				mediator.sendUpdateToGUI("MAIN"); // sends them back to the main menu GUI
 			}
 		} else if(e.getSource().equals(btnEnter)) {
-			if(iterations != 3 || modelController.getWordListSize() > iterations){
+			if(iterations != 10 || modelController.getWordListSize() > iterations){
 				String userInput = txt.getText(); // gets what the user entered into the JTextField
 				txt.setText("");
 				if(!modelController.isValid(userInput)){
@@ -150,7 +150,7 @@ public class spellingGUI extends GUI implements ActionListener{
 						modelController.whereToWrite("failed");
 					}
 					// reset the iterations, and text field, and send them back to the MAIN gui.
-					if(iterations == 3 || modelController.getWordListSize() < iterations){
+					if(iterations == 10 || modelController.getWordListSize() < iterations){
 						iterations  = 0;
 						txtOutput.setText("");
 						mediator.sendUpdateToGUI("MAIN");

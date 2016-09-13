@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class fileHandler {
 	String[] _files = {".mastered.txt",".stats.txt",".failed.txt",".faulted.txt"};
-	
+
 	protected void writeToFile(String fileName, String currentWord){
 		// this method writes to the specified fileName - it checks if the word exists yet or not
 		// if it does, it will then add it. it will also add the word to stats along with whether
@@ -65,7 +65,7 @@ public class fileHandler {
 		} catch (IOException e) {
 		}
 	}
-	
+
 	protected void removingWord(String fileName, String toRemove){
 		/*
 		 * this method finds a string in a file and removes it from the file - removing the blank space
@@ -74,7 +74,7 @@ public class fileHandler {
 		try {
 			File tempFile = new File(".TempWordlist.txt");
 			File inputFile = new File(fileName);
-			
+
 			BufferedWriter fileToWrite = new BufferedWriter(new FileWriter(tempFile, true));
 			BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFile));
 			String word = null;
@@ -123,28 +123,26 @@ public class fileHandler {
 		}
 		return words;
 	}
-	
+
 	public List<String> getWordList(String fileName, String level) { // My solution of having an overloaded method to deal with levels
-		
-		String word = null;
+		String word = "";
 		List<String> words = new ArrayList<String>();
 		FileReader fileReader;
 		try {
 
 			fileReader = new FileReader(fileName);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
-
 			while(!(word = bufferedReader.readLine()).equals(level)) {
 			}   
-			
 			word = bufferedReader.readLine();
 			while(word.split(" ").length == 1 && !word.equals(null)) {
 				words.add(word);
 				word = bufferedReader.readLine();
 			}
-			
+
 			bufferedReader.close();         
 		} catch (Exception e){
+			
 		}
 		return words;
 	}

@@ -37,13 +37,13 @@ public class newGame implements Command{
 		if(_review){
 			_fileName = ".failed.txt";
 		} else {
-			_fileName = "wordlist";
+			_fileName = "NZCER-spelling-lists.txt";
 		}
-		_words = new fileHandler().getWordList(_fileName); // setting the wordList to the required spelling list
+		_words = new fileHandler().getWordList(_fileName, _level); // setting the wordList to the required spelling list
 		if(_words.size() == 0){
 			_GUI.setTxtField("No words to revise. \nPress back to return to main menu.");
 		}
-		//generateRandomWord(); //begin the gui operation by generating a random word
+		generateRandomWord(); //begin the gui operation by generating a random word
 	}
 
 	public void spell(){
@@ -66,8 +66,8 @@ public class newGame implements Command{
 			_wordIndex.add(randomWord);
 			_currentWord = _words.get(randomWord);
 			_GUI.resetSpelling();
-			if(_words.size() > 3){
-				_GUI.appendTxtField("Spell word: "+(_iterations+1)+" of 3\n");
+			if(_words.size() > 10){
+				_GUI.appendTxtField("Spell word: "+(_iterations+1)+" of 10\n");
 			} else {
 				_GUI.appendTxtField("Spell word: "+(_iterations+1)+" of "+_words.size()+"\n");
 			}
@@ -177,7 +177,7 @@ public class newGame implements Command{
 		}
 		// this is necessary to ensure the next word is not read out after 3 iterations or word.size()
 		// is met
-		if(_iterations == 3 || _words.size()-1 < _iterations){
+		if(_iterations == 10 || _words.size()-1 < _iterations){
 			_GUI.setTxtField("No more words to cover.");
 		} else {
 			generateRandomWord();

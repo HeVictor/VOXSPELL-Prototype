@@ -117,7 +117,7 @@ public class spellingGUI extends GUI implements ActionListener{
 				mediator.sendUpdateToGUI("MAIN"); // sends them back to the main menu GUI
 			}
 		} else if(e.getSource().equals(btnEnter)) {
-			if(iterations != 10 || modelController.getWordListSize() > iterations){
+			if(iterations != newGame.NUM_WORDS_TESTED || modelController.getWordListSize() > iterations){
 				String userInput = txt.getText(); // gets what the user entered into the JTextField
 				txt.setText("");
 				if(!modelController.isValid(userInput)){
@@ -138,7 +138,7 @@ public class spellingGUI extends GUI implements ActionListener{
 						modelController.whereToWrite("faulted");
 					} else if(count == 0){
 						// this is if they've failed the word the first try
-						modelController.textToSpeech("echo \"Incorrect, try once more: "+modelController.getCurrentWord()+"\" | festival --tts");
+						modelController.textToSpeech("echo \"Incorrect, try once more: "+modelController.getCurrentWord()+"... "+modelController.getCurrentWord()+"\" | festival --tts"); // Modified to say word twice - Victor
 						txtOutput.append("Incorrect, try once more!\n");
 						count++;
 					}
@@ -150,7 +150,7 @@ public class spellingGUI extends GUI implements ActionListener{
 						modelController.whereToWrite("failed");
 					}
 					// reset the iterations, and text field, and send them back to the MAIN gui.
-					if(iterations == 10 || modelController.getWordListSize() < iterations){
+					if(iterations == newGame.NUM_WORDS_TESTED || modelController.getWordListSize() < iterations){
 						iterations  = 0;
 						txtOutput.setText("");
 						mediator.sendUpdateToGUI("MAIN");

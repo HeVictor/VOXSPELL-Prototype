@@ -103,11 +103,11 @@ public class fileHandler {
 		}
 	}
 
-	public List<String> getWordList(String fileName) {
+	/*public List<String> getWordList(String fileName) {
 		/*
 		 * retrieve the word list associated with a file.
 		 */
-		String word = null;
+		/*String word = null;
 		List<String> words = new ArrayList<String>();
 		FileReader fileReader;
 		try {
@@ -122,24 +122,40 @@ public class fileHandler {
 		} catch (Exception e){
 		}
 		return words;
-	}
-
-	public List<String> getWordList(String fileName, String level) { // My solution of having an overloaded method to deal with levels
-		String word = "";
+	}*/
+	
+	
+	/* A rewritten getWordList method to take level as a parameter to process new wordlist format. Original, single
+	* fileName string method functionality are retained by all invokers of such methods use null for the level input,
+	* to indicate not reading from the NZCER wordlist. - Victor (method originally written by Jacky)
+	*/
+	public List<String> getWordList(String fileName, String level) { 
+		/*
+		 * retrieve the word list associated with a file.
+		 */
+		String word = null;
 		List<String> words = new ArrayList<String>();
 		FileReader fileReader;
 		try {
 
 			fileReader = new FileReader(fileName);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
-			while(!(word = bufferedReader.readLine()).equals(level)) {
-			}   
-			word = bufferedReader.readLine();
-			while(!word.split(" ")[0].equals("%Level") && !word.equals(null)) {
-				words.add(word);
+			   
+			
+			if (level.equals(null)) {
+				while((word = bufferedReader.readLine()) != null) {
+					words.add(word);
+				}  
+			} else {
+				while(!(word = bufferedReader.readLine()).equals(level)) {
+				}
 				word = bufferedReader.readLine();
+				while(!word.split(" ")[0].equals("%Level") && !word.equals(null)) {
+					words.add(word);
+					word = bufferedReader.readLine();
+				}
 			}
-
+				
 			bufferedReader.close();         
 		} catch (Exception e){
 			

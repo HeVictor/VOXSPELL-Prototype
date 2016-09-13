@@ -91,7 +91,7 @@ public class newStats implements Command{
 		// this method generates the scores associated with each word 
 		String[] fileNames = {".mastered.txt", ".faulted.txt", ".failed.txt"};
 		List<String> words = new ArrayList<String>();
-		words = new fileHandler().getWordList(".stats.txt");
+		words = new fileHandler().getWordList(".stats.txt", null);
 		for(String word: words){
 			for(int i = 0; i<fileNames.length; i++){
 				for(String key:scoresForAllWords.keySet()){
@@ -117,7 +117,7 @@ public class newStats implements Command{
 		String[] fileNames = {".failed.txt", ".faulted.txt", ".mastered.txt"};
 		List<String> words = new ArrayList<String>();
 		for(int i = 0; i<fileNames.length; i++){
-			words = new fileHandler().getWordList(fileNames[i]);
+			words = new fileHandler().getWordList(fileNames[i], null);
 			for(String word: words){
 				// if the word does not exist in the _words list then we map it to an array of {0,0,0}
 				// the positions are mastered, faulted and failed

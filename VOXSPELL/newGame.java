@@ -2,6 +2,7 @@ package VOXSPELL;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * This class is the model for the spellingGUI. It handles the data processing and sends an
@@ -20,6 +21,9 @@ public class newGame implements Command{
 	private int _iterations = 0;
 	private List<Integer> _wordIndex = new ArrayList<Integer>();
 	protected String _level = "%Level 1";
+	private CountDownLatch _waitSignal = new CountDownLatch(0);
+	
+	public static final int NUM_WORDS_TESTED = 10; // A constant of num words to be teseted, refactored - Victor
 
 	public newGame(boolean reviewBoolean){
 		/*
@@ -27,6 +31,27 @@ public class newGame implements Command{
 		 * read from the .failed, whereas if its a new game, it reads from wordlist.
 		 */
 		_review = reviewBoolean;
+	}
+	
+	
+	/*
+	 * The three Latch methods below are used to return the local latch, initialize a new CountDownLatch with 1 count
+	 * as an active waiting mechanism, and then count down the Latch to terminate the waiting, respectively. 
+	 * These are to be primarily used in the VoiceWorker class to sync the successive Festival calls so that
+	 * no overlaps occur.
+	 * 
+	 * @author Victor He
+	 */
+	public CountDownLatch getLatch() {
+		return _waitSignal;
+	}
+	
+	public void activateLatch() {
+		_waitSignal = new CountDownLatch(1);
+	}
+	
+	public void countDown() {
+		_waitSignal.countDown();
 	}
 
 	public void execute() {
@@ -36,7 +61,7 @@ public class newGame implements Command{
 		 */
 		if(_review){
 			_fileName = ".failed.txt";
-			_words = new fileHandler().getWordList(_fileName);
+			_words = new fileHandler().getWordList(_fileName, null);
 		} else {
 			_fileName = "NZCER-spelling-lists.txt";
 			_words = new fileHandler().getWordList(_fileName, _level);
@@ -52,7 +77,7 @@ public class newGame implements Command{
 		/*
 		 * merely sends a string for the process builder to read through text to speech
 		 */
-		textToSpeech("echo \"Please spell "+_currentWord+"... "+_currentWord+"\" | festival --tts");
+		textToSpeech("echo \"Please spell "+_currentWord+"\" | festival --tts"); // Modified to only say word once - Victor
 	}
 
 	public void generateRandomWord(){
@@ -68,8 +93,8 @@ public class newGame implements Command{
 			_wordIndex.add(randomWord);
 			_currentWord = _words.get(randomWord);
 			_GUI.resetSpelling();
-			if(_words.size() > 10){
-				_GUI.appendTxtField("Spell word: "+(_iterations+1)+" of 10\n");
+			if(_words.size() > NUM_WORDS_TESTED){
+				_GUI.appendTxtField("Spell word: "+(_iterations+1)+" of "+NUM_WORDS_TESTED+"\n");
 			} else {
 				_GUI.appendTxtField("Spell word: "+(_iterations+1)+" of "+_words.size()+"\n");
 			}
@@ -82,7 +107,7 @@ public class newGame implements Command{
 		 * this function builds a process which is executed within the bash shell
 		 */
 		_GUI.btnRelisten.setEnabled(false);
-		VoiceWorker voice = new VoiceWorker(command, _GUI.btnRelisten);
+		VoiceWorker voice = new VoiceWorker(command, _GUI.btnRelisten, this);
 		voice.execute();
 	}
 
@@ -176,7 +201,7 @@ public class newGame implements Command{
 		}
 		// this is necessary to ensure the next word is not read out after 3 iterations or word.size()
 		// is met
-		if(_iterations == 10 || _words.size()-1 < _iterations){
+		if(_iterations == NUM_WORDS_TESTED || _words.size()-1 < _iterations){
 			_GUI.setTxtField("No more words to cover.");
 		} else {
 			generateRandomWord();

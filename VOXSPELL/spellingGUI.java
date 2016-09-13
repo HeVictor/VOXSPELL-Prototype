@@ -28,7 +28,7 @@ public class spellingGUI extends GUI implements ActionListener{
 	private JButton btnEnter = new JButton("Enter"); 
 	private JButton btnBack = new JButton("Back");
 	private JButton btnStart = new JButton("Start");
-	private JComboBox levelList;
+	private JComboBox<String> levelList;
 	
 
 	public spellingGUI(GUIMediator m) {
@@ -41,7 +41,7 @@ public class spellingGUI extends GUI implements ActionListener{
 		for(int i = 1; i < 12; i++){
 			levels[i-1] = "Level "+i;
 		}
-		levelList = new JComboBox(levels);
+		levelList = new JComboBox<String>(levels);
 		levelList.addActionListener(this);
 		JPanel spellingPanel = new JPanel();
 		txtOutput.setEditable(false);
@@ -81,7 +81,7 @@ public class spellingGUI extends GUI implements ActionListener{
 				mediator.sendUpdateToGUI("MAIN"); // sends them back to the main menu GUI
 			}
 		} else if(e.getSource().equals(btnEnter)) {
-			if(iterations != 3 || modelController.getWordListSize() > iterations){
+			if(iterations != newGame.NUM_WORDS_TESTED || modelController.getWordListSize() > iterations){
 				String userInput = txt.getText(); // gets what the user entered into the JTextField
 				txt.setText("");
 				if(!modelController.isValid(userInput)){
@@ -114,7 +114,7 @@ public class spellingGUI extends GUI implements ActionListener{
 						modelController.whereToWrite("failed");
 					}
 					// reset the iterations, and text field, and send them back to the MAIN gui.
-					if(iterations == 3 || modelController.getWordListSize() < iterations){
+					if(iterations == newGame.NUM_WORDS_TESTED || modelController.getWordListSize() < iterations){
 						iterations  = 0;
 						txtOutput.setText("");
 						mediator.sendUpdateToGUI("MAIN");

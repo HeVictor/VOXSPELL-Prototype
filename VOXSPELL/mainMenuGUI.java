@@ -59,7 +59,7 @@ public class mainMenuGUI extends GUI implements ActionListener{
 
 		buttonPane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 		
-		buttonPane.add(Box.createRigidArea(new Dimension(0,30)));
+		buttonPane.add(Box.createRigidArea(new Dimension(0,20)));
 		
 		buttonPane.add(labelSelect);
 		

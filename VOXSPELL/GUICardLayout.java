@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.JFrame; 
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 
 
 public class GUICardLayout{
@@ -68,6 +69,10 @@ public class GUICardLayout{
 
 	private static void createAndShowGUI() {
 		//Create and set up the window.
+		 try {
+             UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+		 } catch (Exception e){
+		 }
 		JFrame frame = new JFrame("Spelling Aid");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -78,6 +83,7 @@ public class GUICardLayout{
 		//Display the window.
 		frame.pack();
 		frame.setVisible(true);
+		frame.setResizable(false);
 	}
 
 	public static void main(String[] args) {

@@ -8,13 +8,20 @@ package VOXSPELL;
  */
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent; 
-import java.awt.event.ActionListener; 
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane; 
 import javax.swing.JTextArea; 
 import javax.swing.JTextField;
@@ -27,8 +34,8 @@ public class spellingGUI extends GUI implements ActionListener{
 	private int iterations = 0;
 	private JButton btnEnter = new JButton("Enter"); 
 	private JButton btnBack = new JButton("Back");
-	private JButton btnStart = new JButton("Start");
-	private JComboBox<String> levelList;
+	private JButton btnRelisten = new JButton("Relisten");
+	private JComboBox<String> festivalSelect;
 	
 
 	public spellingGUI(GUIMediator m) {
@@ -37,35 +44,63 @@ public class spellingGUI extends GUI implements ActionListener{
 	}
 
 	public JPanel creatingGUI() {
-		String[] levels = new String[11];
-		for(int i = 1; i < 12; i++){
-			levels[i-1] = "Level "+i;
-		}
-		levelList = new JComboBox<String>(levels);
-		levelList.addActionListener(this);
+
 		JPanel spellingPanel = new JPanel();
+		
 		txtOutput.setEditable(false);
 		spellingPanel.setLayout(new BorderLayout());
 		btnEnter.addActionListener(this); 
 		btnBack.addActionListener(this);
-		btnStart.addActionListener(this);
 		txt.setPreferredSize(new Dimension(200, 40));
 		JScrollPane scroll = new JScrollPane(txtOutput);
+		scroll.setPreferredSize(new Dimension(300, 200));
 		
 		JPanel firstPanel = new JPanel();
 		firstPanel.setLayout(new BorderLayout());
-		firstPanel.add(scroll, BorderLayout.PAGE_START);
-		firstPanel.add(txt, BorderLayout.WEST); 
-		firstPanel.add(btnEnter, BorderLayout.CENTER); 
-		firstPanel.add(btnBack, BorderLayout.EAST);
+		firstPanel.add(scroll);
 		
 		JPanel secondPanel = new JPanel();
-		secondPanel.setLayout(new BorderLayout());
-		secondPanel.add(btnStart, BorderLayout.LINE_START);
-		secondPanel.add(levelList, BorderLayout.CENTER);
+		secondPanel.setLayout(new BoxLayout(secondPanel, BoxLayout.Y_AXIS));
+		String[] levels = new String[11];
+		for(int i = 1; i < 12; i++){
+			levels[i-1] = "Level "+i;
+		}
+		festivalSelect = new JComboBox<String>(levels);
+		festivalSelect.setMaximumSize(new Dimension(200, btnRelisten.getMinimumSize().height));
+		btnRelisten.setMaximumSize(new Dimension(200, btnRelisten.getMinimumSize().height));
+		btnRelisten.setAlignmentX(Component.CENTER_ALIGNMENT);
+		secondPanel.add(festivalSelect);
+		secondPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 		
-		spellingPanel.add(firstPanel, BorderLayout.PAGE_START);
-		spellingPanel.add(secondPanel, BorderLayout.PAGE_END);
+		secondPanel.add(btnRelisten);
+		secondPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+		secondPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+		
+		JLabel correctLabel = new JLabel("Words Correct");
+		correctLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		secondPanel.add(correctLabel);
+		
+        JProgressBar progressBar = new JProgressBar(0, 100);
+        progressBar.setStringPainted(true);
+        progressBar.setString("");
+        secondPanel.add(progressBar);
+		
+		JPanel thirdPanel = new JPanel();
+		thirdPanel.setLayout(new BorderLayout());
+		thirdPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+		thirdPanel.add(txt, BorderLayout.CENTER);
+		thirdPanel.add(btnEnter, BorderLayout.EAST);
+		
+		JPanel fourthPanel = new JPanel();
+		fourthPanel.setLayout(new BoxLayout(fourthPanel, BoxLayout.X_AXIS));
+		btnBack.setPreferredSize(new Dimension(20, 20));
+		fourthPanel.add(btnBack);
+		
+		spellingPanel.add(firstPanel, BorderLayout.LINE_START);
+		spellingPanel.add(secondPanel, BorderLayout.EAST);
+		spellingPanel.add(thirdPanel, BorderLayout.SOUTH);
+		
+		spellingPanel.add(fourthPanel, BorderLayout.NORTH);
 		return spellingPanel;
 	}
 
@@ -81,7 +116,7 @@ public class spellingGUI extends GUI implements ActionListener{
 				mediator.sendUpdateToGUI("MAIN"); // sends them back to the main menu GUI
 			}
 		} else if(e.getSource().equals(btnEnter)) {
-			if(iterations != newGame.NUM_WORDS_TESTED || modelController.getWordListSize() > iterations){
+			if(iterations != 3 || modelController.getWordListSize() > iterations){
 				String userInput = txt.getText(); // gets what the user entered into the JTextField
 				txt.setText("");
 				if(!modelController.isValid(userInput)){
@@ -114,19 +149,15 @@ public class spellingGUI extends GUI implements ActionListener{
 						modelController.whereToWrite("failed");
 					}
 					// reset the iterations, and text field, and send them back to the MAIN gui.
-					if(iterations == newGame.NUM_WORDS_TESTED || modelController.getWordListSize() < iterations){
+					if(iterations == 3 || modelController.getWordListSize() < iterations){
 						iterations  = 0;
 						txtOutput.setText("");
 						mediator.sendUpdateToGUI("MAIN");
 					}
 				}
 			}
-		}
-		else if(e.getSource().equals(levelList)){
-			modelController.setLevel((String)levelList.getSelectedItem());
-		}
-		else if (e.getSource().equals(btnStart)){
-			modelController.generateRandomWord();
+		} else if (e.getSource() == btnRelisten){
+			modelController.spell();
 		}
 	}
 

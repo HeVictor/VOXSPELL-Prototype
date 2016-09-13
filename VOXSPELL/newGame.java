@@ -20,8 +20,6 @@ public class newGame implements Command{
 	private int _iterations = 0;
 	private List<Integer> _wordIndex = new ArrayList<Integer>();
 	private String _level = "%Level 1";
-	
-	public static final int NUM_WORDS_TESTED = 10;
 
 	public newGame(boolean reviewBoolean){
 		/*
@@ -38,12 +36,10 @@ public class newGame implements Command{
 		 */
 		if(_review){
 			_fileName = ".failed.txt";
-			_words = new fileHandler().getWordList(_fileName); // setting the wordList to the required spelling list
 		} else {
-			_fileName = "NZCER-spelling-lists.txt";
-			_words = new fileHandler().getWordList(_fileName,_level); // setting the wordList to the required spelling list
+			_fileName = "wordlist";
 		}
-		
+		_words = new fileHandler().getWordList(_fileName); // setting the wordList to the required spelling list
 		if(_words.size() == 0){
 			_GUI.setTxtField("No words to revise. \nPress back to return to main menu.");
 		}
@@ -70,8 +66,8 @@ public class newGame implements Command{
 			_wordIndex.add(randomWord);
 			_currentWord = _words.get(randomWord);
 			_GUI.resetSpelling();
-			if(_words.size() > NUM_WORDS_TESTED){
-				_GUI.appendTxtField("Spell word: "+(_iterations+1)+" of " + NUM_WORDS_TESTED + "\n");
+			if(_words.size() > 3){
+				_GUI.appendTxtField("Spell word: "+(_iterations+1)+" of 3\n");
 			} else {
 				_GUI.appendTxtField("Spell word: "+(_iterations+1)+" of "+_words.size()+"\n");
 			}
@@ -148,8 +144,7 @@ public class newGame implements Command{
 	}
 
 	protected void setLevel(String level){
-		_level = "%" + level;
-		_words = new fileHandler().getWordList(_fileName,_level);
+		_level = level;
 	}
 	
 	protected void whereToWrite(String condition){
@@ -180,9 +175,9 @@ public class newGame implements Command{
 				}
 			}
 		}
-		// this is necessary to ensure the next word is not read out after 10 iterations or word.size()
+		// this is necessary to ensure the next word is not read out after 3 iterations or word.size()
 		// is met
-		if(_iterations == NUM_WORDS_TESTED || _words.size()-1 < _iterations){
+		if(_iterations == 3 || _words.size()-1 < _iterations){
 			_GUI.setTxtField("No more words to cover.");
 		} else {
 			generateRandomWord();

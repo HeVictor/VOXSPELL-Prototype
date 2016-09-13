@@ -51,6 +51,7 @@ public class spellingGUI extends GUI implements ActionListener{
 		spellingPanel.setLayout(new BorderLayout());
 		btnEnter.addActionListener(this); 
 		btnBack.addActionListener(this);
+		btnRelisten.addActionListener(this);
 		txt.setPreferredSize(new Dimension(200, 40));
 		JScrollPane scroll = new JScrollPane(txtOutput);
 		scroll.setPreferredSize(new Dimension(300, 200));

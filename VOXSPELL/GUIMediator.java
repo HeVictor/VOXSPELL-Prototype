@@ -27,12 +27,14 @@ public class GUIMediator {
 		_mainGUI.changeLayout(e);
 	}
 
-	public void setModelOfGUI(String e, Command cmd){
+	public void setModelOfGUI(String e, Command cmd, String level){
 		// associating a GUI with its model
 		for(GUI gui:_GUIList){
 			if(gui instanceof spellingGUI && e.equals("GUI")){
 				gui.setModel(cmd);
 				cmd.addGUI(gui);
+				newGame test = (newGame) cmd;
+				test.setLevel(level);
 			} else if(gui instanceof viewStatsGUI && e.equals("VIEW")){
 				gui.setModel(cmd);
 				cmd.addGUI(gui);

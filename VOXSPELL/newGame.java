@@ -19,7 +19,7 @@ public class newGame implements Command{
 	private boolean _review;
 	private int _iterations = 0;
 	private List<Integer> _wordIndex = new ArrayList<Integer>();
-	private String _level = "%Level 1";
+	protected String _level = "%Level 1";
 
 	public newGame(boolean reviewBoolean){
 		/*

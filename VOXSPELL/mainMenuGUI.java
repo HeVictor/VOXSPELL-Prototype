@@ -110,11 +110,11 @@ public class mainMenuGUI extends GUI implements ActionListener{
 		if(e.getSource() == btnNewGame){
 			mediator.sendUpdateToGUI("GUI");
 			cmd = new newGame(false);
-			mediator.setModelOfGUI("GUI", cmd);
+			mediator.setModelOfGUI("GUI", cmd, (String)levelList.getSelectedItem());
 		} else if(e.getSource() == btnStats){
 			mediator.sendUpdateToGUI("VIEW");
 			cmd = new newStats();
-			mediator.setModelOfGUI("VIEW", cmd);
+			mediator.setModelOfGUI("VIEW", cmd, (String)levelList.getSelectedItem());
 		} 
 		/*else if (e.getSource() == btnClear) {
 			// a warning dialog is shown to confirm that the user really wants to clear statistics
@@ -126,7 +126,7 @@ public class mainMenuGUI extends GUI implements ActionListener{
 		} */else if (e.getSource() == btnReview){
 			mediator.sendUpdateToGUI("GUI");
 			cmd = new newGame(true);
-			mediator.setModelOfGUI("GUI", cmd);
+			mediator.setModelOfGUI("GUI", cmd, (String)levelList.getSelectedItem());
 		}
 		else if (e.getSource() == btnQuit) {
 			System.exit(0);
@@ -136,6 +136,10 @@ public class mainMenuGUI extends GUI implements ActionListener{
 		}
 	}
 
+	public String getSpellingLevel(){
+		return (String)levelList.getSelectedItem();
+	}
+	
 	@Override
 	public void setModel(Command cmd) {	
 		// mainMenu does not need a model associated with it - it merely is used to notify listeners

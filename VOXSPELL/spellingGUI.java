@@ -34,7 +34,7 @@ public class spellingGUI extends GUI implements ActionListener{
 	private int iterations = 0;
 	private JButton btnEnter = new JButton("Enter"); 
 	private JButton btnBack = new JButton("Back");
-	private JButton btnRelisten = new JButton("Relisten");
+	protected JButton btnRelisten = new JButton("Relisten");
 	private JComboBox<String> festivalSelect;
 	
 

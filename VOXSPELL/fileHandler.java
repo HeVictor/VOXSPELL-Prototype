@@ -135,7 +135,7 @@ public class fileHandler {
 			while(!(word = bufferedReader.readLine()).equals(level)) {
 			}   
 			word = bufferedReader.readLine();
-			while(word.split(" ").length == 1 && !word.equals(null)) {
+			while(!word.split(" ")[0].equals("%Level") && !word.equals(null)) {
 				words.add(word);
 				word = bufferedReader.readLine();
 			}

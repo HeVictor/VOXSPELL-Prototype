@@ -36,10 +36,12 @@ public class newGame implements Command{
 		 */
 		if(_review){
 			_fileName = ".failed.txt";
+			_words = new fileHandler().getWordList(_fileName);
 		} else {
 			_fileName = "NZCER-spelling-lists.txt";
+			_words = new fileHandler().getWordList(_fileName, _level);
 		}
-		_words = new fileHandler().getWordList(_fileName, _level); // setting the wordList to the required spelling list
+		// setting the wordList to the required spelling list
 		if(_words.size() == 0){
 			_GUI.setTxtField("No words to revise. \nPress back to return to main menu.");
 		}
@@ -79,12 +81,9 @@ public class newGame implements Command{
 		/*
 		 * this function builds a process which is executed within the bash shell
 		 */
-		ProcessBuilder pb = new ProcessBuilder("bash", "-c", command);
-		try {
-			Process process = pb.start();
-			process.waitFor(); // waiting for the process to finish
-		} catch (Exception e) {
-		}
+		_GUI.btnRelisten.setEnabled(false);
+		VoiceWorker voice = new VoiceWorker(command, _GUI.btnRelisten);
+		voice.execute();
 	}
 
 	public String getCurrentWord(){

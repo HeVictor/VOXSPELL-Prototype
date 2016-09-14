@@ -195,12 +195,18 @@ public class newGame implements Command{
 			writeWordToFile(".failed.txt");
 			if(_review){
 				if(_GUI.promptUserToRelisten()){
-					textToSpeech("echo \"This is how you spell: "+_currentWord+"... \" | festival --tts");
-					String spellWord = "";
+					
+					// changed below to only do one Festival call to solve overlap - Victor
+					
+					String teachToSpell = "\"This is how you spell: "+_currentWord+"... ";
+					
 					for(char c:_currentWord.toCharArray()){
-						spellWord = spellWord + c + "... ";
+						teachToSpell = teachToSpell + c + "... ";
 					}
-					textToSpeech("echo \""+spellWord+"... \" | festival --tts");
+					
+					teachToSpell = teachToSpell + "... \"";
+					
+					textToSpeech("echo " + teachToSpell + " | festival --tts");
 				}
 			}
 		}

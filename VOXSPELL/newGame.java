@@ -63,7 +63,7 @@ public class newGame implements Command{
 		 */
 		if(_review){
 			_fileName = ".failed.txt";
-			_words = new fileHandler().getWordList(_fileName);
+			_words = new fileHandler().getWordList(_fileName, null);
 		} else {
 			_fileName = "NZCER-spelling-lists.txt";
 			_words = new fileHandler().getWordList(_fileName, _level);

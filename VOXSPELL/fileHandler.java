@@ -103,11 +103,11 @@ public class fileHandler {
 		}
 	}
 
-	/*public List<String> getWordList(String fileName) {
+	public List<String> getWordList(String fileName) {
 		/*
 		 * retrieve the word list associated with a file.
 		 */
-		/*String word = null;
+		String word = null;
 		List<String> words = new ArrayList<String>();
 		FileReader fileReader;
 		try {
@@ -122,7 +122,7 @@ public class fileHandler {
 		} catch (Exception e){
 		}
 		return words;
-	}*/
+	}
 	
 	
 	/* A rewritten getWordList method to take level as a parameter to process new wordlist format. Original, single

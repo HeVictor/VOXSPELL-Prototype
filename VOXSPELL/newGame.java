@@ -21,8 +21,8 @@ public class newGame implements Command{
 	private int _iterations = 0;
 	private List<Integer> _wordIndex = new ArrayList<Integer>();
 	protected String _level = "%Level 1";
+	protected int _wordsCorrect = 0;
 	private CountDownLatch _waitSignal = new CountDownLatch(0);
-	
 	public static final int NUM_WORDS_TESTED = 10; // A constant of num words to be teseted, refactored - Victor
 
 	public newGame(boolean reviewBoolean){
@@ -32,8 +32,8 @@ public class newGame implements Command{
 		 */
 		_review = reviewBoolean;
 	}
-	
-	
+
+
 	/*
 	 * The three Latch methods below are used to return the local latch, initialize a new CountDownLatch with 1 count
 	 * as an active waiting mechanism, and then count down the Latch to terminate the waiting, respectively. 
@@ -45,23 +45,25 @@ public class newGame implements Command{
 	public CountDownLatch getLatch() {
 		return _waitSignal;
 	}
-	
+
 	public void activateLatch() {
 		_waitSignal = new CountDownLatch(1);
 	}
-	
+
 	public void countDown() {
 		_waitSignal.countDown();
 	}
 
 	public void execute() {
+		this._wordsCorrect = 0;
+		this._iterations = 0;
 		/*
 		 * This is signature method from the Command interface, and the execute method gets called
 		 * Specifically, it is executing the model view so the spellingGUI can begin.
 		 */
 		if(_review){
 			_fileName = ".failed.txt";
-			_words = new fileHandler().getWordList(_fileName, null);
+			_words = new fileHandler().getWordList(_fileName);
 		} else {
 			_fileName = "NZCER-spelling-lists.txt";
 			_words = new fileHandler().getWordList(_fileName, _level);
@@ -70,14 +72,14 @@ public class newGame implements Command{
 		if(_words.size() == 0){
 			_GUI.setTxtField("No words to revise. \nPress back to return to main menu.");
 		}
-		generateRandomWord(); //begin the gui operation by generating a random word
+		//generateRandomWord(); begin the gui operation by generating a random word
 	}
 
 	public void spell(){
 		/*
 		 * merely sends a string for the process builder to read through text to speech
 		 */
-		textToSpeech("echo \"Please spell "+_currentWord+"\" | festival --tts"); // Modified to only say word once - Victor
+		textToSpeech("echo \"Please spell "+_currentWord+"... "+_currentWord+"\" | festival --tts");
 	}
 
 	public void generateRandomWord(){
@@ -120,6 +122,7 @@ public class newGame implements Command{
 		 * this function merely checks that the user answer is equal to the current word being assessed
 		 */
 		if(answer.toLowerCase().equals(_currentWord.toLowerCase())){
+			_wordsCorrect++;
 			return true;
 		} else {
 			return false;
@@ -170,7 +173,7 @@ public class newGame implements Command{
 	protected void setLevel(String level){
 		_level = level;
 	}
-	
+
 	protected void whereToWrite(String condition){
 		/*
 		 * writes to a file depending on the condition, it will append the word to mastered/faulted/
@@ -201,7 +204,7 @@ public class newGame implements Command{
 		}
 		// this is necessary to ensure the next word is not read out after 3 iterations or word.size()
 		// is met
-		if(_iterations == NUM_WORDS_TESTED || _words.size()-1 < _iterations){
+		if(_iterations == 10 || _words.size()-1 < _iterations){
 			_GUI.setTxtField("No more words to cover.");
 		} else {
 			generateRandomWord();

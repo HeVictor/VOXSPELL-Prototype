@@ -79,10 +79,11 @@ public class newGame implements Command{
 		/*
 		 * merely sends a string for the process builder to read through text to speech
 		 */
-		textToSpeech("echo \"Please spell "+_currentWord+"... \" | festival --tts");
+		textToSpeech("echo \"Please spell "+_currentWord+"... \" | festival --tts", "");
 	}
 
-	public void generateRandomWord(){
+	// Now this method only generates and returns a random word and sets current word - Victor
+	public String generateRandomWord(){
 		/*
 		 * this method generates random words from the wordList obtained - it cannot repeat
 		 * previous words within the same session
@@ -96,20 +97,34 @@ public class newGame implements Command{
 			_currentWord = _words.get(randomWord);
 			_GUI.resetSpelling();
 			if(_words.size() > NUM_WORDS_TESTED){
-				_GUI.appendTxtField("Spell word "+(_iterations+1)+" of "+NUM_WORDS_TESTED+": "); // Changed to cater for user input display - Victor
+				return "Spell word "+(_iterations+1)+" of "+NUM_WORDS_TESTED+": "; // Changed to cater for user input display - Victor
 			} else {
-				_GUI.appendTxtField("Spell word "+(_iterations+1)+" of "+_words.size()+": "); // Changed to cater for user input display - Victor
+				return "Spell word "+(_iterations+1)+" of "+_words.size()+": "; // Changed to cater for user input display - Victor
 			}
-			spell(); // asks -tts to say the word outloud
+			
 		}
+		
+		return null;
+	}
+	
+	// This method is an algorithm to generate, append text to output and then speaks the word to the user. - Victor
+	public void proceedToNextWord(String festivalMsg) {
+		String nextWord = generateRandomWord();
+		
+		if (festivalMsg.equals("")) { // This is only for the first word of every spelling test session - Victor
+			_GUI.appendTxtField(nextWord);
+		} else {
+			textToSpeech("echo \"" + festivalMsg +"\" | festival --tts", nextWord);
+		}
+		spell(); // asks -tts to say the word outloud
 	}
 
-	public void textToSpeech(String command){
+	public void textToSpeech(String command, String msgOutput){
 		/*
 		 * this function builds a process which is executed within the bash shell
 		 */
 		_GUI.btnRelisten.setEnabled(false);
-		VoiceWorker voice = new VoiceWorker(command, _GUI.btnRelisten, this);
+		VoiceWorker voice = new VoiceWorker(command, _GUI.btnRelisten, this, _GUI, msgOutput);
 		voice.execute();
 	}
 
@@ -173,6 +188,23 @@ public class newGame implements Command{
 	protected void setLevel(String level){
 		_level = level;
 	}
+	
+	// Refactored this into a method - Victor
+	private void teachSpelling() {
+		// changed below to only do one Festival call to solve overlap - Victor
+		
+		String teachToSpell = "\"This is how you spell: "+_currentWord+"... ";
+		
+		for(char c:_currentWord.toCharArray()){
+			teachToSpell = teachToSpell + c + "... ";
+		}
+		
+		teachToSpell = teachToSpell + "... \"";
+		
+		proceedToNextWord(teachToSpell);
+	}
+	
+	
 
 	protected void whereToWrite(String condition){
 		/*
@@ -194,28 +226,27 @@ public class newGame implements Command{
 		} else if(condition.equals("failed")){
 			writeWordToFile(".failed.txt");
 			if(_review){
+				textToSpeech("echo \"Incorrect!\" | festival --tts",""); // Moved code around - Victor
 				if(_GUI.promptUserToRelisten()){
-					
-					// changed below to only do one Festival call to solve overlap - Victor
-					
-					String teachToSpell = "\"This is how you spell: "+_currentWord+"... ";
-					
-					for(char c:_currentWord.toCharArray()){
-						teachToSpell = teachToSpell + c + "... ";
-					}
-					
-					teachToSpell = teachToSpell + "... \"";
-					
-					textToSpeech("echo " + teachToSpell + " | festival --tts");
+					teachSpelling(); 
+					return;
 				}
 			}
 		}
 		// this is necessary to ensure the next word is not read out after 3 iterations or word.size()
 		// is met
-		if(_iterations == 10 || _words.size()-1 < _iterations){
+		if(_iterations == NUM_WORDS_TESTED || _words.size()-1 < _iterations){
 			_GUI.setTxtField("No more words to cover.");
 		} else {
-			generateRandomWord();
+			
+			// Changed below a bit to allow syncing of Festival and text output - Victor
+			if (!condition.equals("failed")) {
+				proceedToNextWord("Correct!");
+			} else {
+				proceedToNextWord("Incorrect!");
+			}
+			
+			
 		}
 	}
 }

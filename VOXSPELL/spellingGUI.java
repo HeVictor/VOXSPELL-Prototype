@@ -172,25 +172,25 @@ public class spellingGUI extends GUI implements ActionListener{
 					txtOutput.append(userInput+"\n"); // Added to display user input
 					
 					if(modelController.isCorrect(userInput) && count == 0){
-						modelController.textToSpeech("echo \"Correct!\" | festival --tts");
+						//modelController.textToSpeech("echo \"Correct!\" | festival --tts");
 						txtOutput.append("Correct!\n");
 						iterations++;
 						modelController.whereToWrite("mastered");
 					} else if(modelController.isCorrect(userInput)){
 						// this is the faulted branch - specifically if count > 0, then it means they've had another try
-						modelController.textToSpeech("echo \"Correct!\" | festival --tts");
+						//modelController.textToSpeech("echo \"Correct!\" | festival --tts");
 						txtOutput.append("Correct!\n");
 						iterations++;
 						modelController.whereToWrite("faulted");
 					} else if(count == 0){
 						// this is if they've failed the word the first try
-						modelController.textToSpeech("echo \"Incorrect, try once more: "+modelController.getCurrentWord()+" ... "+modelController.getCurrentWord()+"\" | festival --tts");
-						txtOutput.append("Incorrect, try once more!\n");
+						modelController.textToSpeech("echo \"Incorrect, try once more: "+modelController.getCurrentWord()+" ... "+modelController.getCurrentWord()+"\" | festival --tts","");
+						txtOutput.append("Incorrect, try once more: ");
 						count++;
 					}
 					else {
 						// this is if they've failed the word two times in a row
-						modelController.textToSpeech("echo \"Incorrect!\" | festival --tts");
+						//modelController.textToSpeech("echo \"Incorrect!\" | festival --tts");
 						txtOutput.append("Incorrect!\n");
 						iterations++;
 						modelController.whereToWrite("failed");
@@ -214,7 +214,7 @@ public class spellingGUI extends GUI implements ActionListener{
 		} else if (e.getSource() == btnRelisten){
 			modelController.spell();
 		} else if (e.getSource() == btnStart){
-			modelController.generateRandomWord();
+			modelController.proceedToNextWord("");
 			btnStart.setEnabled(false);
 		}
 	}

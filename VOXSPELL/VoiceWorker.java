@@ -9,11 +9,16 @@ public class VoiceWorker extends SwingWorker<Void,Void> {
 	String _command;
 	JButton _btn;
 	newGame _ng;
+	spellingGUI _GUI;
+	String _outputMsg;
 
-	public VoiceWorker(String command, JButton btn,  newGame ng) { // Modified the constructor to take newGame as parameter - Victor
+	// Now this also takes a String for the purpose of outputting next word on txtField after Festival finishes - Victor
+	public VoiceWorker(String command, JButton btn,  newGame ng, spellingGUI GUI, String outputMsg) { // Modified the constructor to take newGame as parameter - Victor
 		_command = command;
 		_btn = btn;
 		_ng = ng;
+		_GUI = GUI;
+		_outputMsg = outputMsg;
 	}
 
 	@Override
@@ -35,6 +40,9 @@ public class VoiceWorker extends SwingWorker<Void,Void> {
 	protected void done(){
 		_ng.countDown(); // Counts down the latch, freeing it for the next Festival call - Victor
 		_btn.setEnabled(true);
+		_GUI.appendTxtField(_outputMsg); // Added this to sync text appending after Festival completes - Victor
+		
+		
 	}
 
 }

@@ -11,11 +11,19 @@ package VOXSPELL;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
-import javax.swing.JFrame; 
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
 import javax.swing.UIManager;
 
 
@@ -77,8 +85,21 @@ public class GUICardLayout{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		//Create and set up the content pane.
-		GUICardLayout demo = new GUICardLayout();
-		demo.addComponentToPane(frame.getContentPane());
+		GUICardLayout GUILayout = new GUICardLayout();
+		GUILayout.addComponentToPane(frame.getContentPane());
+		
+		JPanel separatorPanel = new JPanel(new BorderLayout(20, 0));
+		separatorPanel.add(new JSeparator(JSeparator.VERTICAL), BorderLayout.WEST);
+		JLabel currentStats = new JLabel("<html>Current Statistics<BR>");
+		currentStats.setPreferredSize(new Dimension(250, 200));
+		separatorPanel.add(currentStats);
+		for(int i = 1; i<12; i++){
+			currentStats.setText(currentStats.getText()+"Level "+i+":<BR>");
+		}
+		currentStats.setText(currentStats.getText()+"</html>");
+		
+		frame.add(separatorPanel, BorderLayout.EAST);
+		
 
 		//Display the window.
 		frame.pack();

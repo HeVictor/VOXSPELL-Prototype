@@ -26,6 +26,10 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 public class mainMenuGUI extends GUI implements ActionListener{
 	private JButton btnNewGame = new JButton("New Game"); 
@@ -98,7 +102,18 @@ public class mainMenuGUI extends GUI implements ActionListener{
 			
 		}
 		
-		panel.add(buttonPane, BorderLayout.EAST);
+		panel.add(buttonPane, BorderLayout.CENTER);
+		
+		/*JPanel separatorPanel = new JPanel(new BorderLayout());
+		separatorPanel.add(new JSeparator(JSeparator.VERTICAL), BorderLayout.WEST);
+		JTextArea currentStats = new JTextArea("Current Statistics\n");
+		currentStats.setPreferredSize(new Dimension(250, 200));
+		separatorPanel.add(currentStats);
+		for(int i = 1; i<12; i++){
+			currentStats.setText(currentStats.getText()+"Level "+i+":\n");
+		}
+		
+		panel.add(separatorPanel, BorderLayout.EAST);*/
 		return panel;
 	}
 

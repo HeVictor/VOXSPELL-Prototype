@@ -150,7 +150,7 @@ public class spellingGUI extends GUI implements ActionListener{
 						modelController.whereToWrite("faulted");
 					} else if(count == 0){
 						// this is if they've failed the word the first try
-						modelController.textToSpeech("echo \"Incorrect, try once more: "+modelController.getCurrentWord()+"\" | festival --tts");
+						modelController.textToSpeech("echo \"Incorrect, try once more: "+modelController.getCurrentWord()+" ... "+modelController.getCurrentWord()+"\" | festival --tts");
 						txtOutput.append("Incorrect, try once more!\n");
 						count++;
 					}

@@ -79,7 +79,7 @@ public class newGame implements Command{
 		/*
 		 * merely sends a string for the process builder to read through text to speech
 		 */
-		textToSpeech("echo \"Please spell "+_currentWord+"... "+_currentWord+"\" | festival --tts");
+		textToSpeech("echo \"Please spell "+_currentWord+"... \" | festival --tts");
 	}
 
 	public void generateRandomWord(){
@@ -196,9 +196,11 @@ public class newGame implements Command{
 			if(_review){
 				if(_GUI.promptUserToRelisten()){
 					textToSpeech("echo \"This is how you spell: "+_currentWord+"... \" | festival --tts");
+					String spellWord = "";
 					for(char c:_currentWord.toCharArray()){
-						textToSpeech("echo \""+c+"... \" | festival --tts");
+						spellWord = spellWord + c + "... ";
 					}
+					textToSpeech("echo \""+spellWord+"... \" | festival --tts");
 				}
 			}
 		}

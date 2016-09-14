@@ -12,6 +12,12 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent; 
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -65,11 +71,36 @@ public class spellingGUI extends GUI implements ActionListener{
 
 		JPanel secondPanel = new JPanel();
 		secondPanel.setLayout(new BoxLayout(secondPanel, BoxLayout.Y_AXIS));
-		String[] levels = new String[11];
-		for(int i = 1; i < 12; i++){
-			levels[i-1] = "Level "+i;
+		
+		// The block below gets the available Festival voices and stores it in a drop-down menu - Victor
+		String bashCmd = "echo '(voice.list)' | festival --pipe -i | grep 'diphone\\|arctic\\|mbrola'";
+				
+		ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", bashCmd);
+		Process process;
+		String[] voicesArray = null;
+		try {
+			process = builder.start();
+					
+			List<String> voices = new ArrayList<String>();
+					
+			InputStream stdout = process.getInputStream();
+			BufferedReader stdoutBuffered = new BufferedReader(new InputStreamReader(stdout));
+			String voice = stdoutBuffered.readLine();
+			while ((voice  != null)) {
+						
+				voice=voice.replaceAll("[()]", "").replaceAll("festival> ", "");
+						
+				voices.add(voice);
+				voice = stdoutBuffered.readLine();
+			}
+					
+			voicesArray = voices.toArray(new String[0]);
+					
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		festivalSelect = new JComboBox<String>(levels);
+				
+		festivalSelect = new JComboBox<String>(voicesArray);
 		festivalSelect.setMaximumSize(new Dimension(200, btnRelisten.getMinimumSize().height));
 		btnRelisten.setMaximumSize(new Dimension(200, btnRelisten.getMinimumSize().height));
 		btnRelisten.setAlignmentX(Component.CENTER_ALIGNMENT);

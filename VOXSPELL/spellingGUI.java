@@ -168,6 +168,9 @@ public class spellingGUI extends GUI implements ActionListener{
 					JOptionPane.showMessageDialog(null, "Must enter a valid input (no symbols or empty field)!", "Warning!", JOptionPane.WARNING_MESSAGE);
 				} else if(modelController.getWordListSize() > 0){
 					// this is the 'mastered' branch, it will notify the model to do appropriate processing
+					
+					txtOutput.append(userInput+"\n"); // Added to display user input
+					
 					if(modelController.isCorrect(userInput) && count == 0){
 						modelController.textToSpeech("echo \"Correct!\" | festival --tts");
 						txtOutput.append("Correct!\n");

@@ -96,9 +96,9 @@ public class newGame implements Command{
 			_currentWord = _words.get(randomWord);
 			_GUI.resetSpelling();
 			if(_words.size() > NUM_WORDS_TESTED){
-				_GUI.appendTxtField("Spell word: "+(_iterations+1)+" of "+NUM_WORDS_TESTED+"\n");
+				_GUI.appendTxtField("Spell word "+(_iterations+1)+" of "+NUM_WORDS_TESTED+": "); // Changed to cater for user input display - Victor
 			} else {
-				_GUI.appendTxtField("Spell word: "+(_iterations+1)+" of "+_words.size()+"\n");
+				_GUI.appendTxtField("Spell word "+(_iterations+1)+" of "+_words.size()+": "); // Changed to cater for user input display - Victor
 			}
 			spell(); // asks -tts to say the word outloud
 		}

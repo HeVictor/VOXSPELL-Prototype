@@ -26,10 +26,10 @@ public class VoiceWorker extends SwingWorker<Void,Void> {
 		ProcessBuilder pb = new ProcessBuilder("bash", "-c",  _command);
 		try {
 			
-			CountDownLatch waitSignal = _ng.getLatch(); // Gets the local Latch from newGame - Victor
+			//CountDownLatch waitSignal = _ng.getLatch(); // Gets the local Latch from newGame - Victor
 			
-			waitSignal.await(); // Waits for last Festival call to properly finish if there was one - Victor
-			_ng.activateLatch(); // Activate the local latch to one count in newGame - Victor
+			//waitSignal.await(); // Waits for last Festival call to properly finish if there was one - Victor
+			//_ng.activateLatch(); // Activate the local latch to one count in newGame - Victor
 			Process process = pb.start();
 			process.waitFor(); // waiting for the process to finish
 		} catch (Exception e) {
@@ -38,10 +38,9 @@ public class VoiceWorker extends SwingWorker<Void,Void> {
 	}
 	
 	protected void done(){
-		_ng.countDown(); // Counts down the latch, freeing it for the next Festival call - Victor
+		//_ng.countDown(); // Counts down the latch, freeing it for the next Festival call - Victor
 		_btn.setEnabled(true);
 		_GUI.appendTxtField(_outputMsg); // Added this to sync text appending after Festival completes - Victor
-		
 		
 	}
 

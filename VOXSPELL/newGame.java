@@ -3,6 +3,8 @@ package VOXSPELL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * This class is the model for the spellingGUI. It handles the data processing and sends an
@@ -22,9 +24,11 @@ public class newGame implements Command{
 	private List<Integer> _wordIndex = new ArrayList<Integer>();
 	protected String _level = "%Level 1";
 	protected int _wordsCorrect = 0;
-	private CountDownLatch _waitSignal = new CountDownLatch(0);
+	//private CountDownLatch _waitSignal = new CountDownLatch(0);
 	protected String _voiceSelected = "akl_nz_jdt_diphone";
 	public static final int NUM_WORDS_TESTED = 10; // A constant of num words to be teseted, refactored - Victor
+	
+	private ExecutorService _threadPool;
 
 	public newGame(boolean reviewBoolean){
 		/*
@@ -32,8 +36,10 @@ public class newGame implements Command{
 		 * read from the .failed, whereas if its a new game, it reads from wordlist.
 		 */
 		_review = reviewBoolean;
+		
+		// This supposedly solves the overlapping by only have one thread at a time. Not sure if this is optimal. - Victor
+		_threadPool = Executors.newFixedThreadPool(1);
 	}
-
 
 	/*
 	 * The three Latch methods below are used to return the local latch, initialize a new CountDownLatch with 1 count
@@ -43,7 +49,7 @@ public class newGame implements Command{
 	 * 
 	 * @author Victor He
 	 */
-	public CountDownLatch getLatch() {
+	/*public CountDownLatch getLatch() {
 		return _waitSignal;
 	}
 
@@ -53,7 +59,7 @@ public class newGame implements Command{
 
 	public void countDown() {
 		_waitSignal.countDown();
-	}
+	}*/
 
 	public void execute() {
 		this._wordsCorrect = 0;
@@ -126,7 +132,9 @@ public class newGame implements Command{
 		 */
 		_GUI.btnRelisten.setEnabled(false);
 		VoiceWorker voice = new VoiceWorker(command, _GUI.btnRelisten, this, _GUI, msgOutput);
-		voice.execute();
+		//voice.execute();
+		
+		_threadPool.submit(voice);
 	}
 
 	public String getCurrentWord(){
@@ -194,13 +202,13 @@ public class newGame implements Command{
 	private void teachSpelling() {
 		// changed below to only do one Festival call to solve overlap - Victor
 		
-		String teachToSpell = "\"This is how you spell: "+_currentWord+"... ";
+		String teachToSpell = "This is how you spell: "+_currentWord+", ";
 		
 		for(char c:_currentWord.toCharArray()){
-			teachToSpell = teachToSpell + c + "... ";
+			teachToSpell = teachToSpell + c + ", ";
 		}
 		
-		teachToSpell = teachToSpell + "... \"";
+		teachToSpell = teachToSpell + ", ";
 		
 		proceedToNextWord(teachToSpell);
 	}
@@ -227,7 +235,7 @@ public class newGame implements Command{
 		} else if(condition.equals("failed")){
 			writeWordToFile(".failed.txt");
 			if(_review){
-				textToSpeech("echo \"Incorrect!\" | festival --tts",""); // Moved code around - Victor
+				textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \"Incorrect!\")'",""); // Moved code around - Victor
 				if(_GUI.promptUserToRelisten()){
 					teachSpelling(); 
 					return;

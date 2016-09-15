@@ -80,7 +80,7 @@ public class newGame implements Command{
 		/*
 		 * merely sends a string for the process builder to read through text to speech
 		 */
-		textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \""+_currentWord+"\")'", "");
+		textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \"Please spell "+_currentWord+"\")'", "");
 	}
 
 	// Now this method only generates and returns a random word and sets current word - Victor
@@ -115,7 +115,7 @@ public class newGame implements Command{
 		if (festivalMsg.equals("")) { // This is only for the first word of every spelling test session - Victor
 			_GUI.appendTxtField(nextWord);
 		} else {
-			textToSpeech("echo \"" + festivalMsg +"\" | festival --tts", nextWord);
+			textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \""+festivalMsg+"\")'", nextWord);
 		}
 		spell(); // asks -tts to say the word outloud
 	}

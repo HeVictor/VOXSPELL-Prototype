@@ -23,7 +23,7 @@ public class VoiceWorker extends SwingWorker<Void,Void> {
 
 	@Override
 	protected Void doInBackground() throws Exception {
-		ProcessBuilder pb = new ProcessBuilder("bash", "-c", _command);
+		ProcessBuilder pb = new ProcessBuilder("bash", "-c",  _command);
 		try {
 			
 			CountDownLatch waitSignal = _ng.getLatch(); // Gets the local Latch from newGame - Victor

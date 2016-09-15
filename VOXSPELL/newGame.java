@@ -23,6 +23,7 @@ public class newGame implements Command{
 	protected String _level = "%Level 1";
 	protected int _wordsCorrect = 0;
 	private CountDownLatch _waitSignal = new CountDownLatch(0);
+	protected String _voiceSelected = "akl_nz_jdt_diphone";
 	public static final int NUM_WORDS_TESTED = 10; // A constant of num words to be teseted, refactored - Victor
 
 	public newGame(boolean reviewBoolean){
@@ -79,7 +80,7 @@ public class newGame implements Command{
 		/*
 		 * merely sends a string for the process builder to read through text to speech
 		 */
-		textToSpeech("echo \"Please spell "+_currentWord+"... \" | festival --tts", "");
+		textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \""+_currentWord+"\")'", "");
 	}
 
 	// Now this method only generates and returns a random word and sets current word - Victor

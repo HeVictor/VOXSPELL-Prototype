@@ -72,7 +72,7 @@ public class spellingGUI extends GUI implements ActionListener{
 		JPanel secondPanel = new JPanel();
 		secondPanel.setLayout(new BoxLayout(secondPanel, BoxLayout.Y_AXIS));
 		
-		// The block below gets the available Festival voices and stores it in a drop-down menu - Victor
+		/*// The block below gets the available Festival voices and stores it in a drop-down menu - Victor
 		String bashCmd = "echo '(voice.list)' | festival --pipe -i | grep 'diphone\\|arctic\\|mbrola'";
 				
 		ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", bashCmd);
@@ -93,14 +93,15 @@ public class spellingGUI extends GUI implements ActionListener{
 				voices.add(voice);
 				voice = stdoutBuffered.readLine();
 			}
-					
-			voicesArray = voices.toArray(new String[0]);
+			voicesArray = voices.toArray(new String[2]);
 					
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-				
+		}*/
+			
+		String[] voicesArray = {"akl_nz_jdt_diphone", "kal_diphone"};
 		festivalSelect = new JComboBox<String>(voicesArray);
+		festivalSelect.addActionListener(this);
 		festivalSelect.setMaximumSize(new Dimension(200, btnRelisten.getMinimumSize().height));
 		btnRelisten.setMaximumSize(new Dimension(200, btnRelisten.getMinimumSize().height));
 		btnRelisten.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -216,6 +217,8 @@ public class spellingGUI extends GUI implements ActionListener{
 		} else if (e.getSource() == btnStart){
 			modelController.proceedToNextWord("");
 			btnStart.setEnabled(false);
+		} else if (e.getSource() == festivalSelect){
+			modelController._voiceSelected = (String)festivalSelect.getSelectedItem();
 		}
 	}
 

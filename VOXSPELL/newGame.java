@@ -193,7 +193,7 @@ public class newGame implements Command{
 		}
 		char[] characters = userInput.toCharArray();
 		for(char c: characters){
-			if(!Character.isLetter(c)){
+			if(!Character.isLetter(c) && (c != '\'') ){
 				return false;
 			}
 		}

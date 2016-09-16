@@ -60,14 +60,16 @@ public class spellingGUI extends GUI implements ActionListener{
 		JPanel spellingPanel = new JPanel();
 
 		txtOutput.setEditable(false);
+		txt.setEditable(false);
+		btnEnter.setEnabled(false);
 		progressBar.setStringPainted(true);
 		spellingPanel.setLayout(new BorderLayout());
 		btnEnter.addActionListener(this); 
 		btnBack.addActionListener(this);
 		btnRelisten.addActionListener(this);
 		btnStart.addActionListener(this);
-		btnRelisten.addActionListener(this);
-		btnVideo.setEnabled(false);
+		btnVideo.addActionListener(this);
+		btnVideo.setEnabled(true);
 		txt.setPreferredSize(new Dimension(200, 40));
 		JScrollPane scroll = new JScrollPane(txtOutput);
 		scroll.setPreferredSize(new Dimension(300, 200));
@@ -178,7 +180,7 @@ public class spellingGUI extends GUI implements ActionListener{
 				txt.setText("");
 				if(!modelController.isValid(userInput)){
 					// sends a warning if any symbols are entered into the field
-					JOptionPane.showMessageDialog(null, "Must enter a valid input (no symbols or empty field)!", "Warning!", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Must enter a valid input (no non-apostrophe symbols or empty field)!", "Warning!", JOptionPane.WARNING_MESSAGE);
 				} else if(modelController.getWordListSize() > 0){
 					// this is the 'mastered' branch, it will notify the model to do appropriate processing
 
@@ -230,8 +232,14 @@ public class spellingGUI extends GUI implements ActionListener{
 		} else if (e.getSource() == btnStart){
 			modelController.proceedToNextWord("");
 			btnStart.setEnabled(false);
+			txt.setEditable(true);
+			btnEnter.setEnabled(true);
 		} else if (e.getSource() == festivalSelect){
 			modelController.setVoice((String)festivalSelect.getSelectedItem());
+		} else if (e.getSource() == btnVideo) {
+			VideoWorker vw = new VideoWorker("big_buck_bunny_1_minute.avi");
+			vw.execute();
+			
 		}
 	}
 

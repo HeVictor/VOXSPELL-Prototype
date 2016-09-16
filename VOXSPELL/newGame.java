@@ -25,7 +25,7 @@ public class newGame implements Command{
 	protected String _level = "%Level 1";
 	protected int _wordsCorrect = 0;
 	//private CountDownLatch _waitSignal = new CountDownLatch(0);
-	protected String _voiceSelected = "akl_nz_jdt_diphone";
+	private String _voiceSelected = "";
 	public static final int NUM_WORDS_TESTED = 10; // A constant of num words to be teseted, refactored - Victor
 	
 	private ExecutorService _threadPool;
@@ -62,6 +62,7 @@ public class newGame implements Command{
 	}*/
 
 	public void execute() {
+		this._voiceSelected = _GUI.getVoiceField();
 		this._wordsCorrect = 0;
 		this._iterations = 0;
 		/*
@@ -104,8 +105,10 @@ public class newGame implements Command{
 			_currentWord = _words.get(randomWord);
 			_GUI.resetSpelling();
 			if(_words.size() > NUM_WORDS_TESTED){
+				_GUI.setJProgress(0, 10, this._wordsCorrect);
 				return "Spell word "+(_iterations+1)+" of "+NUM_WORDS_TESTED+": "; // Changed to cater for user input display - Victor
 			} else {
+				_GUI.setJProgress(0, _words.size(), this._wordsCorrect);
 				return "Spell word "+(_iterations+1)+" of "+_words.size()+": "; // Changed to cater for user input display - Victor
 			}
 			
@@ -146,13 +149,16 @@ public class newGame implements Command{
 		 * this function merely checks that the user answer is equal to the current word being assessed
 		 */
 		if(answer.toLowerCase().equals(_currentWord.toLowerCase())){
-			_wordsCorrect++;
 			return true;
 		} else {
 			return false;
 		}
 	}
 
+	protected String getVoice(){
+		return this._voiceSelected;
+	}
+	
 	protected int getWordListSize(){
 		return _words.size();
 	}
@@ -194,8 +200,16 @@ public class newGame implements Command{
 		return true;
 	}
 
+	protected void setVoice(String voice){
+		this._voiceSelected = voice;
+	}
+	
 	protected void setLevel(String level){
 		_level = level;
+	}
+	
+	protected void resetVoice(){
+		
 	}
 	
 	// Refactored this into a method - Victor
@@ -225,6 +239,8 @@ public class newGame implements Command{
 		_iterations++;
 		if (condition.equals("mastered")){
 			writeWordToFile(".mastered.txt");
+			_wordsCorrect++;
+			_GUI.setJProgress(0, 0, this._wordsCorrect);
 			if(_review){
 				removeWordFromFile(".failed.txt");
 			}
@@ -254,9 +270,7 @@ public class newGame implements Command{
 				proceedToNextWord("Correct!");
 			} else {
 				proceedToNextWord("Incorrect!");
-			}
-			
-			
+			}		
 		}
 	}
 }

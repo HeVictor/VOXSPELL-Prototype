@@ -11,6 +11,7 @@ package VOXSPELL;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -79,6 +80,7 @@ public class GUICardLayout{
 		//Create and set up the window.
 		 try {
              UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+             UIManager.getLookAndFeelDefaults().put("gtkOrange", (new Color(127, 255, 191)));
 		 } catch (Exception e){
 		 }
 		JFrame frame = new JFrame("Spelling Aid");

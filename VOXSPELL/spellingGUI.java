@@ -8,6 +8,7 @@ package VOXSPELL;
  */
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent; 
@@ -31,6 +32,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane; 
 import javax.swing.JTextArea; 
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 
 public class spellingGUI extends GUI implements ActionListener{
 	private JTextField txt = new JTextField("");
@@ -44,6 +46,8 @@ public class spellingGUI extends GUI implements ActionListener{
 	private JComboBox<String> festivalSelect;
 	private JButton btnStart = new JButton("Start");
 	private JLabel spellingVoiceLabel = new JLabel("Speaking Voices");
+	private JProgressBar progressBar = new JProgressBar();
+	private JButton btnVideo = new JButton("Play Video Reward"); 
 
 
 	public spellingGUI(GUIMediator m) {
@@ -56,11 +60,14 @@ public class spellingGUI extends GUI implements ActionListener{
 		JPanel spellingPanel = new JPanel();
 
 		txtOutput.setEditable(false);
+		progressBar.setStringPainted(true);
 		spellingPanel.setLayout(new BorderLayout());
 		btnEnter.addActionListener(this); 
 		btnBack.addActionListener(this);
 		btnRelisten.addActionListener(this);
 		btnStart.addActionListener(this);
+		btnRelisten.addActionListener(this);
+		btnVideo.setEnabled(false);
 		txt.setPreferredSize(new Dimension(200, 40));
 		JScrollPane scroll = new JScrollPane(txtOutput);
 		scroll.setPreferredSize(new Dimension(300, 200));
@@ -71,59 +78,63 @@ public class spellingGUI extends GUI implements ActionListener{
 
 		JPanel secondPanel = new JPanel();
 		secondPanel.setLayout(new BoxLayout(secondPanel, BoxLayout.Y_AXIS));
-		
+
 		// The block below gets the available Festival voices and stores it in a drop-down menu - Victor
 		String bashCmd = "ls /usr/share/festival/voices/english";
-				
+
 		ProcessBuilder builder = new ProcessBuilder("/bin/bash", "-c", bashCmd);
 		Process process;
 		String[] voicesArray = null;
 		try {
 			process = builder.start();
-					
+
 			List<String> voices = new ArrayList<String>();
-					
+
 			InputStream stdout = process.getInputStream();
 			BufferedReader stdoutBuffered = new BufferedReader(new InputStreamReader(stdout));
 			String voice = stdoutBuffered.readLine();
 			while ((voice  != null)) {
-						
+
 				voices.add(voice);
 				voice = stdoutBuffered.readLine();
 			}
 			voicesArray = voices.toArray(new String[0]);
-					
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-			
+
 		//String[] voicesArray = {"akl_nz_jdt_diphone", "kal_diphone"};
 		festivalSelect = new JComboBox<String>(voicesArray);
 		festivalSelect.addActionListener(this);
 		festivalSelect.setMaximumSize(new Dimension(200, btnRelisten.getMinimumSize().height));
 		btnRelisten.setMaximumSize(new Dimension(200, btnRelisten.getMinimumSize().height));
 		btnRelisten.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
-		
+
+
 		spellingVoiceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		secondPanel.add(spellingVoiceLabel);
-		
+
 		secondPanel.add(festivalSelect);
-		secondPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+		secondPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
 		secondPanel.add(btnRelisten);
 		btnRelisten.setEnabled(false);
-		secondPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+		secondPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		secondPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
-		JLabel correctLabel = new JLabel("Words Correct");
+		JLabel correctLabel = new JLabel("Words Mastered");
 		correctLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		secondPanel.add(correctLabel);
 
-		JProgressBar progressBar = new JProgressBar(0, 100);
 		progressBar.setStringPainted(true);
 		progressBar.setString("");
 		secondPanel.add(progressBar);
+		secondPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		btnVideo.setAlignmentX(Component.CENTER_ALIGNMENT);
+		secondPanel.add(btnVideo);
+		
 
 		JPanel thirdPanel = new JPanel();
 		thirdPanel.setLayout(new BorderLayout());
@@ -142,6 +153,7 @@ public class spellingGUI extends GUI implements ActionListener{
 		spellingPanel.add(thirdPanel, BorderLayout.SOUTH);
 
 		spellingPanel.add(fourthPanel, BorderLayout.NORTH);
+		
 		return spellingPanel;
 	}
 
@@ -156,6 +168,8 @@ public class spellingGUI extends GUI implements ActionListener{
 				btnRelisten.setEnabled(false);
 				iterations  = 0;
 				txtOutput.setText("");
+				modelController.setVoice(this.festivalSelect.getItemAt(0));
+				festivalSelect.setSelectedIndex(0);
 				mediator.sendUpdateToGUI("MAIN"); // sends them back to the main menu GUI
 			}
 		} else if(e.getSource().equals(btnEnter)) {
@@ -167,10 +181,10 @@ public class spellingGUI extends GUI implements ActionListener{
 					JOptionPane.showMessageDialog(null, "Must enter a valid input (no symbols or empty field)!", "Warning!", JOptionPane.WARNING_MESSAGE);
 				} else if(modelController.getWordListSize() > 0){
 					// this is the 'mastered' branch, it will notify the model to do appropriate processing
-					
+
 					txtOutput.append(userInput+"\n"); // Added to display user input
-					
-					if(modelController.isCorrect(userInput) && count == 0){
+
+					if(count == 0 && modelController.isCorrect(userInput)){
 						//modelController.textToSpeech("echo \"Correct!\" | festival --tts");
 						txtOutput.append("Correct!\n");
 						iterations++;
@@ -183,8 +197,8 @@ public class spellingGUI extends GUI implements ActionListener{
 						modelController.whereToWrite("faulted");
 					} else if(count == 0){
 						// this is if they've failed the word the first try
-						modelController.textToSpeech("festival -b '(voice_"+modelController._voiceSelected+")' '(SayText \"Incorrect, try once more: "+modelController.getCurrentWord()+"\")'", "");
-						modelController.textToSpeech("festival -b '(voice_"+modelController._voiceSelected+")' '(SayText \""+modelController.getCurrentWord()+"\")'", "");
+						modelController.textToSpeech("festival -b '(voice_"+modelController.getVoice()+")' '(SayText \"Incorrect, try once more: "+modelController.getCurrentWord()+"\")'", "");
+						modelController.textToSpeech("festival -b '(voice_"+modelController.getVoice()+")' '(SayText \""+modelController.getCurrentWord()+"\")'", "");
 						txtOutput.append("Incorrect, try once more: ");
 						count++;
 					}
@@ -217,7 +231,7 @@ public class spellingGUI extends GUI implements ActionListener{
 			modelController.proceedToNextWord("");
 			btnStart.setEnabled(false);
 		} else if (e.getSource() == festivalSelect){
-			modelController._voiceSelected = (String)festivalSelect.getSelectedItem();
+			modelController.setVoice((String)festivalSelect.getSelectedItem());
 		}
 	}
 
@@ -236,6 +250,22 @@ public class spellingGUI extends GUI implements ActionListener{
 		}
 	}
 
+	protected void setJProgress(int min, int max, int current){
+		if (min != 0 && max != 0){
+			this.progressBar.setMaximum(max);
+			this.progressBar.setMinimum(min);
+		} else {
+			this.progressBar.setValue(current*10);
+			this.progressBar.setString(""+current+"/"+max);
+			//this.progressBar.
+		}
+
+	}
+
+	protected String getVoiceField(){
+		return this.festivalSelect.getItemAt(0);
+	}
+	
 	protected void setTxtField(String txtToSet){
 		txtOutput.setText(txtToSet);
 	}

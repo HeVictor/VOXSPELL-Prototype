@@ -185,7 +185,8 @@ public class spellingGUI extends GUI implements ActionListener{
 						modelController.whereToWrite("faulted");
 					} else if(count == 0){
 						// this is if they've failed the word the first try
-						modelController.textToSpeech("festival -b '(voice_"+modelController._voiceSelected+")' '(SayText \"Incorrect, try once more: "+modelController.getCurrentWord()+", "+modelController.getCurrentWord()+"\")'", "");
+						modelController.textToSpeech("festival -b '(voice_"+modelController._voiceSelected+")' '(SayText \"Incorrect, try once more: "+modelController.getCurrentWord()+"\")'", "");
+						modelController.textToSpeech("festival -b '(voice_"+modelController._voiceSelected+")' '(SayText \""+modelController.getCurrentWord()+"\")'", "");
 						txtOutput.append("Incorrect, try once more: ");
 						count++;
 					}
@@ -200,7 +201,7 @@ public class spellingGUI extends GUI implements ActionListener{
 					if(iterations == 10 || modelController.getWordListSize() < iterations){
 						iterations  = 0;
 						txtOutput.setText("");
-						if(modelController._wordsCorrect > 8 && modelController._level != "%Level 11"){
+						if(modelController._wordsCorrect > 8 && !modelController._level.equals("%Level 11")){
 							int PromptResult = JOptionPane.showConfirmDialog(null, "Would you like to move up in level?", "Confirmation", 
 									JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
 							if(PromptResult == 0){

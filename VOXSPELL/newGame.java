@@ -203,14 +203,15 @@ public class newGame implements Command{
 		// changed below to only do one Festival call to solve overlap - Victor
 		
 		String teachToSpell = "This is how you spell: "+_currentWord+", ";
+		textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \"This is how you spell: "+_currentWord+"\")'","");
 		
 		for(char c:_currentWord.toCharArray()){
-			teachToSpell = teachToSpell + c + ", ";
+			textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \""+c+"\")'","");
 		}
 		
-		teachToSpell = teachToSpell + ", ";
+		//teachToSpell = teachToSpell + ", ";
 		
-		proceedToNextWord(teachToSpell);
+		//proceedToNextWord(teachToSpell);
 	}
 	
 	

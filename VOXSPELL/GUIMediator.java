@@ -41,4 +41,13 @@ public class GUIMediator {
 			}
 		}
 	}
+	
+	public void updateSideStats(String level, boolean success){
+		for(GUI gui: _GUIList){
+			if(gui instanceof CurrentStatsGUI){
+				CurrentStatsGUI sidePanel = (CurrentStatsGUI) gui;
+				sidePanel.updateStats(level, success);
+			}
+		}
+	}
 }

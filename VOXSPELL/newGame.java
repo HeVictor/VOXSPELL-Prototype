@@ -216,7 +216,7 @@ public class newGame implements Command{
 	private void teachSpelling() {
 		// changed below to only do one Festival call to solve overlap - Victor
 		
-		String teachToSpell = "This is how you spell: "+_currentWord+", ";
+		//String teachToSpell = "This is how you spell: "+_currentWord+", ";
 		textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \"This is how you spell: "+_currentWord+"\")'","");
 		
 		for(char c:_currentWord.toCharArray()){
@@ -238,9 +238,9 @@ public class newGame implements Command{
 		 */
 		_iterations++;
 		if (condition.equals("mastered")){
-			writeWordToFile(".mastered.txt");
 			_wordsCorrect++;
 			_GUI.setJProgress(0, 0, this._wordsCorrect);
+			writeWordToFile(".mastered.txt");
 			if(_review){
 				removeWordFromFile(".failed.txt");
 			}

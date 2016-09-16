@@ -8,7 +8,6 @@ package VOXSPELL;
  */
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent; 
@@ -32,7 +31,6 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane; 
 import javax.swing.JTextArea; 
 import javax.swing.JTextField;
-import javax.swing.UIManager;
 
 public class spellingGUI extends GUI implements ActionListener{
 	private JTextField txt = new JTextField("");
@@ -60,8 +58,6 @@ public class spellingGUI extends GUI implements ActionListener{
 		JPanel spellingPanel = new JPanel();
 
 		txtOutput.setEditable(false);
-		txt.setEditable(false);
-		btnEnter.setEnabled(false);
 		progressBar.setStringPainted(true);
 		spellingPanel.setLayout(new BorderLayout());
 		btnEnter.addActionListener(this); 
@@ -69,7 +65,9 @@ public class spellingGUI extends GUI implements ActionListener{
 		btnRelisten.addActionListener(this);
 		btnStart.addActionListener(this);
 		btnVideo.addActionListener(this);
-		btnVideo.setEnabled(true);
+		btnVideo.setEnabled(false);
+		txt.setEditable(false);
+		btnEnter.setEnabled(false);
 		txt.setPreferredSize(new Dimension(200, 40));
 		JScrollPane scroll = new JScrollPane(txtOutput);
 		scroll.setPreferredSize(new Dimension(300, 200));
@@ -180,6 +178,7 @@ public class spellingGUI extends GUI implements ActionListener{
 				txt.setText("");
 				if(!modelController.isValid(userInput)){
 					// sends a warning if any symbols are entered into the field
+					JOptionPane.showMessageDialog(null, "Must enter a valid input (no symbols or empty field)!", "Warning!", JOptionPane.WARNING_MESSAGE);
 					JOptionPane.showMessageDialog(null, "Must enter a valid input (no non-apostrophe symbols or empty field)!", "Warning!", JOptionPane.WARNING_MESSAGE);
 				} else if(modelController.getWordListSize() > 0){
 					// this is the 'mastered' branch, it will notify the model to do appropriate processing
@@ -191,12 +190,14 @@ public class spellingGUI extends GUI implements ActionListener{
 						txtOutput.append("Correct!\n");
 						iterations++;
 						modelController.whereToWrite("mastered");
+						mediator.updateSideStats(this.modelController._level, true);
 					} else if(modelController.isCorrect(userInput)){
 						// this is the faulted branch - specifically if count > 0, then it means they've had another try
 						//modelController.textToSpeech("echo \"Correct!\" | festival --tts");
 						txtOutput.append("Correct!\n");
 						iterations++;
 						modelController.whereToWrite("faulted");
+						mediator.updateSideStats(this.modelController._level, false);
 					} else if(count == 0){
 						// this is if they've failed the word the first try
 						modelController.textToSpeech("festival -b '(voice_"+modelController.getVoice()+")' '(SayText \"Incorrect, try once more: "+modelController.getCurrentWord()+"\")'", "");
@@ -210,6 +211,7 @@ public class spellingGUI extends GUI implements ActionListener{
 						txtOutput.append("Incorrect!\n");
 						iterations++;
 						modelController.whereToWrite("failed");
+						mediator.updateSideStats(this.modelController._level, false);
 					}
 					// reset the iterations, and text field, and send them back to the MAIN gui.
 					if(iterations == 10 || modelController.getWordListSize() < iterations){
@@ -231,15 +233,11 @@ public class spellingGUI extends GUI implements ActionListener{
 			modelController.spell();
 		} else if (e.getSource() == btnStart){
 			modelController.proceedToNextWord("");
-			btnStart.setEnabled(false);
 			txt.setEditable(true);
 			btnEnter.setEnabled(true);
+			btnStart.setEnabled(false);
 		} else if (e.getSource() == festivalSelect){
 			modelController.setVoice((String)festivalSelect.getSelectedItem());
-		} else if (e.getSource() == btnVideo) {
-			VideoWorker vw = new VideoWorker("big_buck_bunny_1_minute.avi");
-			vw.execute();
-			
 		}
 	}
 
@@ -259,13 +257,13 @@ public class spellingGUI extends GUI implements ActionListener{
 	}
 
 	protected void setJProgress(int min, int max, int current){
-		if (min != 0 && max != 0){
+		System.out.println(max);
+		if (min == 0 && max == 0 && current < max){
 			this.progressBar.setMaximum(max);
 			this.progressBar.setMinimum(min);
 		} else {
 			this.progressBar.setValue(current*10);
 			this.progressBar.setString(""+current+"/"+max);
-			//this.progressBar.
 		}
 
 	}

@@ -33,8 +33,10 @@ public class GUICardLayout{
 	private spellingGUI spelling;
 	private mainMenuGUI main;
 	private viewStatsGUI viewStats;
+	private CurrentStatsGUI sidePanel;
+	private GUIMediator GUIManager = new GUIMediator();
 
-	public void addComponentToPane(Container pane){
+	public void addComponentToPane(Container pane, JFrame frame){
 		GUIMediator GUIManager = new GUIMediator(); //instantiating the mediator
 
 		// creating the first card - which is displayed first, it is the mainMenu gui
@@ -64,7 +66,17 @@ public class GUICardLayout{
 		GUIManager.addGUI(spelling);
 		GUIManager.addGUI(viewStats);
 		GUIManager.addMainGUI(this);
-
+		
+		GUI sidePanel = new CurrentStatsGUI(GUIManager);
+		JPanel separatorPanel = sidePanel.creatingGUI();
+		
+		frame.add(separatorPanel, BorderLayout.EAST); // this adds the sidePanel and is displayed at all times
+		currentStats sideStats = new currentStats();
+		
+		GUIManager.addGUI(sidePanel);
+		sidePanel.setModel(sideStats);
+		sideStats.addGUI(sidePanel);
+		
 		pane.add(cards, BorderLayout.CENTER);
 
 	}
@@ -80,7 +92,7 @@ public class GUICardLayout{
 		//Create and set up the window.
 		 try {
              UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-             UIManager.getLookAndFeelDefaults().put("gtkOrange", (new Color(127, 255, 191)));
+             //UIManager.getLookAndFeelDefaults().put("gtkOrange", (new Color(127, 255, 191)));
 		 } catch (Exception e){
 		 }
 		JFrame frame = new JFrame("Spelling Aid");
@@ -88,19 +100,7 @@ public class GUICardLayout{
 
 		//Create and set up the content pane.
 		GUICardLayout GUILayout = new GUICardLayout();
-		GUILayout.addComponentToPane(frame.getContentPane());
-		
-		JPanel separatorPanel = new JPanel(new BorderLayout(20, 0));
-		separatorPanel.add(new JSeparator(JSeparator.VERTICAL), BorderLayout.WEST);
-		JLabel currentStats = new JLabel("<html>Current Statistics<BR>");
-		currentStats.setPreferredSize(new Dimension(250, 200));
-		separatorPanel.add(currentStats);
-		for(int i = 1; i<12; i++){
-			currentStats.setText(currentStats.getText()+"Level "+i+":<BR>");
-		}
-		currentStats.setText(currentStats.getText()+"</html>");
-		
-		frame.add(separatorPanel, BorderLayout.EAST);
+		GUILayout.addComponentToPane(frame.getContentPane(), frame);
 		
 
 		//Display the window.

@@ -35,6 +35,7 @@ public class mainMenuGUI extends GUI implements ActionListener{
 	private JButton btnNewGame = new JButton("New Game"); 
 	private JButton btnReview = new JButton("Review Mistakes"); 
 	private JButton btnStats = new JButton("View Stats");
+	private JButton btnClear = new JButton("Clear Stats");
 	private JButton btnQuit = new JButton("Quit Game"); 
 	private JLabel labelSelect = new JLabel("Please select a spelling level: ");
 	private JComboBox<String> levelList;
@@ -59,6 +60,7 @@ public class mainMenuGUI extends GUI implements ActionListener{
 		btnNewGame.addActionListener(this); 
 		btnReview.addActionListener(this); 
 		btnStats.addActionListener(this); 
+		btnClear.addActionListener(this);
 		btnQuit.addActionListener(this); 
 
 		buttonPane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
@@ -83,6 +85,10 @@ public class mainMenuGUI extends GUI implements ActionListener{
 		btnStats.setMaximumSize(new Dimension(200, btnNewGame.getMinimumSize().height));
 		buttonPane.add(btnStats); 
 		buttonPane.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		btnClear.setMaximumSize(new Dimension(200, btnNewGame.getMinimumSize().height));
+		buttonPane.add(btnClear);
+		buttonPane.add(Box.createRigidArea(new Dimension(0, 10)));
 
 		btnQuit.setMaximumSize(new Dimension(200, btnNewGame.getMinimumSize().height));
 		buttonPane.add(btnQuit);
@@ -94,8 +100,7 @@ public class mainMenuGUI extends GUI implements ActionListener{
 					img.setRGB(i, j, 255-img.getRGB(i, j));
 				}
 			}
-			ImageIcon icon = new ImageIcon(img.getSubimage(100, 100, 250, 250));
-
+			ImageIcon icon = new ImageIcon(img.getSubimage(100, 100, 250, 300));
 			JLabel label = new JLabel(icon);
 			panel.add(label, BorderLayout.WEST);
 		} catch (Exception e){
@@ -131,14 +136,14 @@ public class mainMenuGUI extends GUI implements ActionListener{
 			cmd = new newStats();
 			mediator.setModelOfGUI("VIEW", cmd, (String)levelList.getSelectedItem());
 		} 
-		/*else if (e.getSource() == btnClear) {
+		else if (e.getSource() == btnClear) {
 			// a warning dialog is shown to confirm that the user really wants to clear statistics
 			int PromptResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to clear your statistics?", "Confirmation", 
 					JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
 			if(PromptResult == 0){
 				cmd = new clearStats();
 			}
-		} */else if (e.getSource() == btnReview){
+		} else if (e.getSource() == btnReview){
 			mediator.sendUpdateToGUI("GUI");
 			cmd = new newGame(true);
 			mediator.setModelOfGUI("GUI", cmd, (String)levelList.getSelectedItem());

@@ -26,6 +26,8 @@ public class newGame implements Command{
 	protected int _wordsCorrect = 0;
 	//private CountDownLatch _waitSignal = new CountDownLatch(0);
 	private String _voiceSelected = "";
+	private int _listSize = 0;
+	private static final String LIST_FILE_NAME = "NZCER-spelling-lists.txt";
 	public static final int NUM_WORDS_TESTED = 10; // A constant of num words to be teseted, refactored - Victor
 	
 	private ExecutorService _threadPool;
@@ -65,6 +67,9 @@ public class newGame implements Command{
 		this._voiceSelected = _GUI.getVoiceField();
 		this._wordsCorrect = 0;
 		this._iterations = 0;
+		this._words.clear();
+		this._currentWord = "";
+		this._wordIndex.clear();
 		/*
 		 * This is signature method from the Command interface, and the execute method gets called
 		 * Specifically, it is executing the model view so the spellingGUI can begin.
@@ -73,12 +78,18 @@ public class newGame implements Command{
 			_fileName = ".failed.txt";
 			_words = new fileHandler().getWordList(_fileName, null);
 		} else {
-			_fileName = "NZCER-spelling-lists.txt";
+			_fileName = LIST_FILE_NAME;
+			System.out.println("Hello");
 			_words = new fileHandler().getWordList(_fileName, _level);
+			System.out.println(_words);
 		}
 		// setting the wordList to the required spelling list
 		if(_words.size() == 0){
 			_GUI.setTxtField("No words to revise. \nPress back to return to main menu.");
+		} else if (_words.size() >= NUM_WORDS_TESTED){
+			this._listSize = NUM_WORDS_TESTED;
+		} else {
+			this._listSize = _words.size();
 		}
 		//generateRandomWord(); begin the gui operation by generating a random word
 	}
@@ -104,8 +115,8 @@ public class newGame implements Command{
 			_wordIndex.add(randomWord);
 			_currentWord = _words.get(randomWord);
 			_GUI.resetSpelling();
-			if(_words.size() > NUM_WORDS_TESTED){
-				_GUI.setJProgress(0, 10, this._wordsCorrect);
+			if(_words.size() >= NUM_WORDS_TESTED){
+				_GUI.setJProgress(0, NUM_WORDS_TESTED, this._wordsCorrect);
 				return "Spell word "+(_iterations+1)+" of "+NUM_WORDS_TESTED+": "; // Changed to cater for user input display - Victor
 			} else {
 				_GUI.setJProgress(0, _words.size(), this._wordsCorrect);
@@ -239,7 +250,7 @@ public class newGame implements Command{
 		_iterations++;
 		if (condition.equals("mastered")){
 			_wordsCorrect++;
-			_GUI.setJProgress(0, 0, this._wordsCorrect);
+			_GUI.setJProgress(0, this._listSize, this._wordsCorrect);
 			writeWordToFile(".mastered.txt");
 			if(_review){
 				removeWordFromFile(".failed.txt");
@@ -262,7 +273,7 @@ public class newGame implements Command{
 		// this is necessary to ensure the next word is not read out after 3 iterations or word.size()
 		// is met
 		if(_iterations == NUM_WORDS_TESTED || _words.size()-1 < _iterations){
-			_GUI.setTxtField("No more words to cover.");
+			_GUI.appendTxtField("No more words to cover.");
 		} else {
 			
 			// Changed below a bit to allow syncing of Festival and text output - Victor

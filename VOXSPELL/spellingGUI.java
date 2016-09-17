@@ -38,7 +38,7 @@ public class spellingGUI extends GUI implements ActionListener{
 	private newGame modelController;
 	private int count = 0;
 	private int iterations = 0;
-	private JButton btnEnter = new JButton("Enter"); 
+	protected JButton btnEnter = new JButton("Enter"); 
 	private JButton btnBack = new JButton("Back");
 	protected JButton btnRelisten = new JButton("Relisten");
 	private JComboBox<String> festivalSelect;
@@ -46,6 +46,7 @@ public class spellingGUI extends GUI implements ActionListener{
 	private JLabel spellingVoiceLabel = new JLabel("Speaking Voices");
 	private JProgressBar progressBar = new JProgressBar();
 	private JButton btnVideo = new JButton("Play Video Reward"); 
+	private JButton btnAdvanceLevel = new JButton("Level Up");
 
 
 	public spellingGUI(GUIMediator m) {
@@ -56,7 +57,7 @@ public class spellingGUI extends GUI implements ActionListener{
 	public JPanel creatingGUI() {
 
 		JPanel spellingPanel = new JPanel();
-
+		btnAdvanceLevel.setEnabled(false);
 		txtOutput.setEditable(false);
 		progressBar.setStringPainted(true);
 		spellingPanel.setLayout(new BorderLayout());
@@ -65,12 +66,13 @@ public class spellingGUI extends GUI implements ActionListener{
 		btnRelisten.addActionListener(this);
 		btnStart.addActionListener(this);
 		btnVideo.addActionListener(this);
+		btnAdvanceLevel.addActionListener(this);
 		btnVideo.setEnabled(false);
 		txt.setEditable(false);
 		btnEnter.setEnabled(false);
 		txt.setPreferredSize(new Dimension(200, 40));
 		JScrollPane scroll = new JScrollPane(txtOutput);
-		scroll.setPreferredSize(new Dimension(300, 200));
+		scroll.setPreferredSize(new Dimension(300, 250));
 
 		JPanel firstPanel = new JPanel();
 		firstPanel.setLayout(new BorderLayout());
@@ -134,7 +136,11 @@ public class spellingGUI extends GUI implements ActionListener{
 		
 		btnVideo.setAlignmentX(Component.CENTER_ALIGNMENT);
 		secondPanel.add(btnVideo);
+		secondPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
+		btnAdvanceLevel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnAdvanceLevel.setMaximumSize(new Dimension(btnVideo.getMinimumSize().width, btnVideo.getMinimumSize().height));
+		secondPanel.add(btnAdvanceLevel);
 
 		JPanel thirdPanel = new JPanel();
 		thirdPanel.setLayout(new BorderLayout());
@@ -178,7 +184,6 @@ public class spellingGUI extends GUI implements ActionListener{
 				txt.setText("");
 				if(!modelController.isValid(userInput)){
 					// sends a warning if any symbols are entered into the field
-					JOptionPane.showMessageDialog(null, "Must enter a valid input (no symbols or empty field)!", "Warning!", JOptionPane.WARNING_MESSAGE);
 					JOptionPane.showMessageDialog(null, "Must enter a valid input (no non-apostrophe symbols or empty field)!", "Warning!", JOptionPane.WARNING_MESSAGE);
 				} else if(modelController.getWordListSize() > 0){
 					// this is the 'mastered' branch, it will notify the model to do appropriate processing
@@ -216,28 +221,28 @@ public class spellingGUI extends GUI implements ActionListener{
 					// reset the iterations, and text field, and send them back to the MAIN gui.
 					if(iterations == 10 || modelController.getWordListSize() < iterations){
 						iterations  = 0;
-						txtOutput.setText("");
 						if(modelController._wordsCorrect > 8 && !modelController._level.equals("%Level 11")){
-							int PromptResult = JOptionPane.showConfirmDialog(null, "Would you like to move up in level?", "Confirmation", 
-									JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-							if(PromptResult == 0){
-								modelController.setLevel("%Level "+(Integer.parseInt(modelController._level.split(" ")[1])+1));
-								modelController.execute();
-								btnStart.setEnabled(true);
-							}
+							btnAdvanceLevel.setEnabled(true);
 						}
+						btnStart.setEnabled(true);
+						modelController.execute();
 					}
 				}
 			}
 		} else if (e.getSource() == btnRelisten){
 			modelController.spell();
 		} else if (e.getSource() == btnStart){
+			txtOutput.setText("");
 			modelController.proceedToNextWord("");
 			txt.setEditable(true);
 			btnEnter.setEnabled(true);
 			btnStart.setEnabled(false);
 		} else if (e.getSource() == festivalSelect){
 			modelController.setVoice((String)festivalSelect.getSelectedItem());
+		} else if (e.getSource() == btnAdvanceLevel) {
+			modelController.setLevel("%Level "+(Integer.parseInt(modelController._level.split(" ")[1])+1));
+			modelController.execute();
+			btnAdvanceLevel.setEnabled(false);
 		}
 	}
 
@@ -257,8 +262,8 @@ public class spellingGUI extends GUI implements ActionListener{
 	}
 
 	protected void setJProgress(int min, int max, int current){
-		System.out.println(max);
-		if (min == 0 && max == 0 && current < max){
+
+		if (progressBar.getMinimum() == 0 && progressBar.getMaximum() == 0){
 			this.progressBar.setMaximum(max);
 			this.progressBar.setMinimum(min);
 		} else {

@@ -17,7 +17,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
+import uk.co.caprica.vlcj.player.MediaPlayerEventListener;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
 /**
@@ -31,7 +33,7 @@ import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
  *
  */
 
-public class MediaPlayer extends JFrame implements ActionListener, WindowListener{
+public class MediaPlayer extends JFrame implements ActionListener, WindowListener, MediaPlayerEventListener{
 	
 	private static final String PLAY_IMAGE = "PLAY.png";
 	private static final String PAUSE_IMAGE = "PAUSE.png";
@@ -118,6 +120,9 @@ public class MediaPlayer extends JFrame implements ActionListener, WindowListene
 		// This allows this class to respond to window closing calls.
 		this.addWindowListener(this);
 		
+		// This allows this class to respond to media player events.
+		rewardVideo.addMediaPlayerEventListener(this);
+		
 		// Plays the video.
 		rewardVideo.playMedia(_videoName);
 	}
@@ -144,14 +149,15 @@ public class MediaPlayer extends JFrame implements ActionListener, WindowListene
 		if (e.getSource() == btnPlayPause) {	
 			if (rewardVideo.isPlaying()) {
 				btnPlayPause.setIcon(_playIcon);
+				rewardVideo.pause();
 			} else {
 				btnPlayPause.setIcon(_pauseIcon);
+				rewardVideo.play();
 			}
-			rewardVideo.pause();
 		} else if (e.getSource() == btnFFW) {
-			rewardVideo.skip(1000);
+			rewardVideo.skip(5000);
 		} else if (e.getSource() == btnRWD) {
-			rewardVideo.skip(-1000);
+			rewardVideo.skip(-5000);
 		} else if (e.getSource() == btnStop) {
 			rewardVideo.setTime(0);
 			rewardVideo.pause();
@@ -165,6 +171,8 @@ public class MediaPlayer extends JFrame implements ActionListener, WindowListene
 			}
 			rewardVideo.mute();
 		}
+		
+		
 		
 	}
 
@@ -196,6 +204,204 @@ public class MediaPlayer extends JFrame implements ActionListener, WindowListene
 
 	@Override
 	public void windowOpened(WindowEvent arg0) {
+	}
+
+	@Override
+	public void backward(uk.co.caprica.vlcj.player.MediaPlayer arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void buffering(uk.co.caprica.vlcj.player.MediaPlayer arg0, float arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void elementaryStreamAdded(uk.co.caprica.vlcj.player.MediaPlayer arg0, int arg1, int arg2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void elementaryStreamDeleted(uk.co.caprica.vlcj.player.MediaPlayer arg0, int arg1, int arg2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void elementaryStreamSelected(uk.co.caprica.vlcj.player.MediaPlayer arg0, int arg1, int arg2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void endOfSubItems(uk.co.caprica.vlcj.player.MediaPlayer arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void error(uk.co.caprica.vlcj.player.MediaPlayer arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	// This detects that the video has finished playing and will restart and pause the video (like pressing Stop).
+	@Override
+	public void finished(uk.co.caprica.vlcj.player.MediaPlayer arg0) {
+		rewardVideo.stop();
+		VideoWorker vw = new VideoWorker(rewardVideo);
+		vw.execute();
+		btnStop.doClick();
+	}
+
+	@Override
+	public void forward(uk.co.caprica.vlcj.player.MediaPlayer arg0) {
+		// TODO Auto-generated method stub		
+	}
+
+	@Override
+	public void lengthChanged(uk.co.caprica.vlcj.player.MediaPlayer arg0, long arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mediaChanged(uk.co.caprica.vlcj.player.MediaPlayer arg0, libvlc_media_t arg1, String arg2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mediaDurationChanged(uk.co.caprica.vlcj.player.MediaPlayer arg0, long arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mediaFreed(uk.co.caprica.vlcj.player.MediaPlayer arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mediaMetaChanged(uk.co.caprica.vlcj.player.MediaPlayer arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mediaParsedChanged(uk.co.caprica.vlcj.player.MediaPlayer arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mediaStateChanged(uk.co.caprica.vlcj.player.MediaPlayer arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mediaSubItemAdded(uk.co.caprica.vlcj.player.MediaPlayer arg0, libvlc_media_t arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mediaSubItemTreeAdded(uk.co.caprica.vlcj.player.MediaPlayer arg0, libvlc_media_t arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void newMedia(uk.co.caprica.vlcj.player.MediaPlayer arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void opening(uk.co.caprica.vlcj.player.MediaPlayer arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void pausableChanged(uk.co.caprica.vlcj.player.MediaPlayer arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void paused(uk.co.caprica.vlcj.player.MediaPlayer arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void playing(uk.co.caprica.vlcj.player.MediaPlayer arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void positionChanged(uk.co.caprica.vlcj.player.MediaPlayer arg0, float arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void scrambledChanged(uk.co.caprica.vlcj.player.MediaPlayer arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void seekableChanged(uk.co.caprica.vlcj.player.MediaPlayer arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void snapshotTaken(uk.co.caprica.vlcj.player.MediaPlayer arg0, String arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stopped(uk.co.caprica.vlcj.player.MediaPlayer arg0) {
+	}
+
+	@Override
+	public void subItemFinished(uk.co.caprica.vlcj.player.MediaPlayer arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void subItemPlayed(uk.co.caprica.vlcj.player.MediaPlayer arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void timeChanged(uk.co.caprica.vlcj.player.MediaPlayer arg0, long arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void titleChanged(uk.co.caprica.vlcj.player.MediaPlayer arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void videoOutput(uk.co.caprica.vlcj.player.MediaPlayer arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 

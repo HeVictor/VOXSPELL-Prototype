@@ -47,6 +47,8 @@ public class spellingGUI extends GUI implements ActionListener{
 	private JProgressBar progressBar = new JProgressBar();
 	private JButton btnVideo = new JButton("Play Video Reward"); 
 	private JButton btnAdvanceLevel = new JButton("Level Up");
+	private JLabel correctLabel = new JLabel("Words Mastered");
+	private JLabel currentLevel = new JLabel("Current Level:");
 
 
 	public spellingGUI(GUIMediator m) {
@@ -57,10 +59,20 @@ public class spellingGUI extends GUI implements ActionListener{
 	public JPanel creatingGUI() {
 
 		JPanel spellingPanel = new JPanel();
+		spellingPanel.setLayout(new BorderLayout());
+		
+		// related to setting the state of the jcomponents
 		btnAdvanceLevel.setEnabled(false);
 		txtOutput.setEditable(false);
 		progressBar.setStringPainted(true);
-		spellingPanel.setLayout(new BorderLayout());
+		btnVideo.setEnabled(false);
+		txt.setEditable(false);
+		btnEnter.setEnabled(false);
+		btnRelisten.setEnabled(false);
+		progressBar.setStringPainted(true);
+		progressBar.setString("");
+		
+		// adding associated actionlisteners to these components
 		txt.addActionListener(this);
 		btnEnter.addActionListener(this); 
 		btnBack.addActionListener(this);
@@ -68,19 +80,17 @@ public class spellingGUI extends GUI implements ActionListener{
 		btnStart.addActionListener(this);
 		btnVideo.addActionListener(this);
 		btnAdvanceLevel.addActionListener(this);
-		btnVideo.setEnabled(false);
-		txt.setEditable(false);
-		btnEnter.setEnabled(false);
+		
 		txt.setPreferredSize(new Dimension(200, 40));
 		JScrollPane scroll = new JScrollPane(txtOutput);
 		scroll.setPreferredSize(new Dimension(300, 250));
 
-		JPanel firstPanel = new JPanel();
-		firstPanel.setLayout(new BorderLayout());
-		firstPanel.add(scroll);
+		JPanel textPanel = new JPanel();
+		textPanel.setLayout(new BorderLayout());
+		textPanel.add(scroll);
 
-		JPanel secondPanel = new JPanel();
-		secondPanel.setLayout(new BoxLayout(secondPanel, BoxLayout.Y_AXIS));
+		JPanel btnPanel = new JPanel();
+		btnPanel.setLayout(new BoxLayout(btnPanel, BoxLayout.Y_AXIS));
 
 		// The block below gets the available Festival voices and stores it in a drop-down menu - Victor
 		String bashCmd = "ls /usr/share/festival/voices/english";
@@ -104,44 +114,40 @@ public class spellingGUI extends GUI implements ActionListener{
 			voicesArray = voices.toArray(new String[0]);
 
 		} catch (IOException e) {
-			e.printStackTrace();
 		}
 
-		//String[] voicesArray = {"akl_nz_jdt_diphone", "kal_diphone"};
 		festivalSelect = new JComboBox<String>(voicesArray);
 		festivalSelect.addActionListener(this);
 		festivalSelect.setMaximumSize(new Dimension(200, btnRelisten.getMinimumSize().height));
+		
 		btnRelisten.setMaximumSize(new Dimension(200, btnRelisten.getMinimumSize().height));
 		btnRelisten.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
 		spellingVoiceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		secondPanel.add(spellingVoiceLabel);
+		btnPanel.add(spellingVoiceLabel);
 
-		secondPanel.add(festivalSelect);
-		secondPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+		btnPanel.add(festivalSelect);
+		// this adds essentially a 'transparent box' which enables a gap between jcomponents
+		btnPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-		secondPanel.add(btnRelisten);
-		btnRelisten.setEnabled(false);
-		secondPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-		secondPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+		btnPanel.add(btnRelisten);
+		btnPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+		btnPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
-		JLabel correctLabel = new JLabel("Words Mastered");
 		correctLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		secondPanel.add(correctLabel);
+		btnPanel.add(correctLabel);
 
-		progressBar.setStringPainted(true);
-		progressBar.setString("");
-		secondPanel.add(progressBar);
-		secondPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+		btnPanel.add(progressBar);
+		btnPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		btnVideo.setAlignmentX(Component.CENTER_ALIGNMENT);
-		secondPanel.add(btnVideo);
-		secondPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+		btnPanel.add(btnVideo);
+		btnPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 		
 		btnAdvanceLevel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnAdvanceLevel.setMaximumSize(new Dimension(btnVideo.getMinimumSize().width, btnVideo.getMinimumSize().height));
-		secondPanel.add(btnAdvanceLevel);
+		btnPanel.add(btnAdvanceLevel);
 
 		JPanel thirdPanel = new JPanel();
 		thirdPanel.setLayout(new BorderLayout());
@@ -154,11 +160,12 @@ public class spellingGUI extends GUI implements ActionListener{
 		btnBack.setPreferredSize(new Dimension(20, 20));
 		fourthPanel.add(btnBack);
 		fourthPanel.add(btnStart);
+		fourthPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+		fourthPanel.add(currentLevel);
 
-		spellingPanel.add(firstPanel, BorderLayout.LINE_START);
-		spellingPanel.add(secondPanel, BorderLayout.EAST);
+		spellingPanel.add(textPanel, BorderLayout.LINE_START);
+		spellingPanel.add(btnPanel, BorderLayout.EAST);
 		spellingPanel.add(thirdPanel, BorderLayout.SOUTH);
-
 		spellingPanel.add(fourthPanel, BorderLayout.NORTH);
 		
 		return spellingPanel;
@@ -177,6 +184,8 @@ public class spellingGUI extends GUI implements ActionListener{
 				txtOutput.setText("");
 				modelController.setVoice(this.festivalSelect.getItemAt(0));
 				festivalSelect.setSelectedIndex(0);
+				progressBar.setValue(0);
+				progressBar.setString("");
 				mediator.sendUpdateToGUI("MAIN"); // sends them back to the main menu GUI
 			}
 		} else if(e.getSource().equals(btnEnter)) {
@@ -222,6 +231,7 @@ public class spellingGUI extends GUI implements ActionListener{
 					// reset the iterations, and text field, and send them back to the MAIN gui.
 					if(iterations == 10 || modelController.getWordListSize() < iterations){
 						String levelCompleteMsg = "Level complete.";
+						btnRelisten.setEnabled(false);
 						iterations = 0;
 						if(modelController._wordsCorrect > 8){
 							String levelMasteredMsg = levelCompleteMsg + " Well done for mastering 9 or more words!";
@@ -236,6 +246,7 @@ public class spellingGUI extends GUI implements ActionListener{
 							JOptionPane.showMessageDialog(null, levelCompleteMsg + " Unfortunately you need to master at least 9 or more words to watch the reward video and progressing to the next level. Better luck next time!");
 						}
 						modelController.execute();
+						btnStart.setEnabled(true);
 					}
 				}
 			}
@@ -247,6 +258,8 @@ public class spellingGUI extends GUI implements ActionListener{
 			txt.setEditable(true);
 			btnEnter.setEnabled(false);
 			btnStart.setEnabled(false);
+			btnVideo.setEnabled(false);
+			btnAdvanceLevel.setEnabled(false);
 		} else if (e.getSource() == festivalSelect){
 			modelController.setVoice((String)festivalSelect.getSelectedItem());
 		} else if (e.getSource() == btnAdvanceLevel) {
@@ -282,7 +295,7 @@ public class spellingGUI extends GUI implements ActionListener{
 			this.progressBar.setMaximum(max);
 			this.progressBar.setMinimum(min);
 		} else {
-			this.progressBar.setValue(current*10);
+			this.progressBar.setValue(current*100/max);
 			this.progressBar.setString(""+current+"/"+max);
 		}
 
@@ -302,5 +315,9 @@ public class spellingGUI extends GUI implements ActionListener{
 
 	public void setModel(Command cmd) {
 		modelController = (newGame) cmd;		
+	}
+	
+	public void setLevelLabel(String level){
+		this.currentLevel.setText("Current Level: "+level);
 	}
 }

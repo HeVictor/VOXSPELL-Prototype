@@ -11,20 +11,12 @@ package VOXSPELL;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.JTextArea;
 import javax.swing.UIManager;
 
 
@@ -37,7 +29,7 @@ public class GUICardLayout{
 	private GUIMediator GUIManager = new GUIMediator();
 
 	public void addComponentToPane(Container pane, JFrame frame){
-		GUIMediator GUIManager = new GUIMediator(); //instantiating the mediator
+		GUIManager = new GUIMediator(); //instantiating the mediator
 
 		// creating the first card - which is displayed first, it is the mainMenu gui
 		JPanel card1 = new JPanel();
@@ -67,7 +59,7 @@ public class GUICardLayout{
 		GUIManager.addGUI(viewStats);
 		GUIManager.addMainGUI(this);
 		
-		GUI sidePanel = new CurrentStatsGUI(GUIManager);
+		sidePanel = new CurrentStatsGUI(GUIManager);
 		JPanel separatorPanel = sidePanel.creatingGUI();
 		
 		frame.add(separatorPanel, BorderLayout.EAST); // this adds the sidePanel and is displayed at all times
@@ -92,7 +84,6 @@ public class GUICardLayout{
 		//Create and set up the window.
 		 try {
              UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-             //UIManager.getLookAndFeelDefaults().put("gtkOrange", (new Color(127, 255, 191)));
 		 } catch (Exception e){
 		 }
 		JFrame frame = new JFrame("Spelling Aid");
@@ -114,10 +105,8 @@ public class GUICardLayout{
 			new File(".mastered.txt").createNewFile(); // If these files already exist, they will not be created/override existing files.
 			new File(".faulted.txt").createNewFile();
 			new File(".failed.txt").createNewFile();
-			new File(".stats.txt").createNewFile();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {

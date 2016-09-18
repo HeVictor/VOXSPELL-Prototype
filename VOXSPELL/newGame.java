@@ -2,7 +2,6 @@ package VOXSPELL;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -24,7 +23,6 @@ public class newGame implements Command{
 	private List<Integer> _wordIndex = new ArrayList<Integer>();
 	protected String _level = "%Level 1";
 	protected int _wordsCorrect = 0;
-	//private CountDownLatch _waitSignal = new CountDownLatch(0);
 	private String _voiceSelected = "";
 	private int _listSize = 0;
 	private static final String LIST_FILE_NAME = "NZCER-spelling-lists.txt";
@@ -43,26 +41,6 @@ public class newGame implements Command{
 		_threadPool = Executors.newFixedThreadPool(1);
 	}
 
-	/*
-	 * The three Latch methods below are used to return the local latch, initialize a new CountDownLatch with 1 count
-	 * as an active waiting mechanism, and then count down the Latch to terminate the waiting, respectively. 
-	 * These are to be primarily used in the VoiceWorker class to sync the successive Festival calls so that
-	 * no overlaps occur.
-	 * 
-	 * @author Victor He
-	 */
-	/*public CountDownLatch getLatch() {
-		return _waitSignal;
-	}
-
-	public void activateLatch() {
-		_waitSignal = new CountDownLatch(1);
-	}
-
-	public void countDown() {
-		_waitSignal.countDown();
-	}*/
-
 	public void execute() {
 		this._voiceSelected = _GUI.getVoiceField();
 		this._wordsCorrect = 0;
@@ -75,13 +53,13 @@ public class newGame implements Command{
 		 * Specifically, it is executing the model view so the spellingGUI can begin.
 		 */
 		if(_review){
+			_GUI.setLevelLabel("REVIEW");
 			_fileName = ".failed.txt";
 			_words = new fileHandler().getWordList(_fileName, null);
 		} else {
+			_GUI.setLevelLabel(this._level.split(" ")[1]);
 			_fileName = LIST_FILE_NAME;
-			System.out.println("Hello");
 			_words = new fileHandler().getWordList(_fileName, _level);
-			System.out.println(_words);
 		}
 		// setting the wordList to the required spelling list
 		if(_words.size() == 0){
@@ -116,6 +94,7 @@ public class newGame implements Command{
 			_currentWord = _words.get(randomWord);
 			_GUI.resetSpelling();
 			if(_words.size() >= NUM_WORDS_TESTED){
+				// makes a call to the view to update the progress of the jprogressbar - jacky
 				_GUI.setJProgress(0, NUM_WORDS_TESTED, this._wordsCorrect);
 				return "Spell word "+(_iterations+1)+" of "+NUM_WORDS_TESTED+": "; // Changed to cater for user input display - Victor
 			} else {
@@ -124,7 +103,6 @@ public class newGame implements Command{
 			}
 			
 		}
-		
 		return null;
 	}
 	
@@ -157,20 +135,17 @@ public class newGame implements Command{
 			spell(); // asks -tts to say the word outloud
 			
 		}
-		
-		
-		
-		
 	}
 
 	public void textToSpeech(String command, String msgOutput){
 		/*
 		 * this function builds a process which is executed within the bash shell
 		 */
+		// these are disabling the buttons to prevent error-prone states i.e. too many VoiceWorker objects
+		// being generated.
 		_GUI.btnRelisten.setEnabled(false);
 		_GUI.btnEnter.setEnabled(false);
 		VoiceWorker voice = new VoiceWorker(command, _GUI.btnRelisten, _GUI.btnEnter, this, _GUI, msgOutput);
-		//voice.execute();
 		
 		_threadPool.submit(voice);
 	}
@@ -221,7 +196,7 @@ public class newGame implements Command{
 
 	public boolean isValid(String userInput) {
 		/*
-		 * checks the user input is valid and does not contain any non-letters
+		 * checks the user input is valid and does not contain any non-letters except apostrophes
 		 */
 		if(userInput.equals("")){
 			return false;
@@ -250,17 +225,12 @@ public class newGame implements Command{
 	// Refactored this into a method - Victor
 	private void teachSpelling() {
 		// changed below to only do one Festival call to solve overlap - Victor
-		
-		//String teachToSpell = "This is how you spell: "+_currentWord+", ";
 		textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \"This is how you spell: "+_currentWord+"\")'","");
-		
+		// sends a batch command to festival through the process builder to set the voice, and say the current word - Jacky
 		for(char c:_currentWord.toCharArray()){
 			textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \""+c+"\")'","");
+			// speaking each letter individual - SayText has an inherent gap between each call.
 		}
-		
-		//teachToSpell = teachToSpell + ", ";
-		
-		//proceedToNextWord(teachToSpell);
 	}
 	
 	

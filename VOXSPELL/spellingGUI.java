@@ -220,9 +220,12 @@ public class spellingGUI extends GUI implements ActionListener{
 					}
 					// reset the iterations, and text field, and send them back to the MAIN gui.
 					if(iterations == 10 || modelController.getWordListSize() < iterations){
-						iterations  = 0;
-						if(modelController._wordsCorrect > 8 && !modelController._level.equals("%Level 11")){
-							btnAdvanceLevel.setEnabled(true);
+						iterations = 0;
+						if(modelController._wordsCorrect > 8){
+							btnVideo.setEnabled(true);
+							if (!modelController._level.equals("%Level 11")) {
+								btnAdvanceLevel.setEnabled(true);
+							}
 						}
 						btnStart.setEnabled(true);
 						modelController.execute();
@@ -243,6 +246,8 @@ public class spellingGUI extends GUI implements ActionListener{
 			modelController.setLevel("%Level "+(Integer.parseInt(modelController._level.split(" ")[1])+1));
 			modelController.execute();
 			btnAdvanceLevel.setEnabled(false);
+		} else if (e.getSource() == btnVideo) {
+			new MediaPlayer("big_buck_bunny_1_minute.avi").setupGUI();
 		}
 	}
 

@@ -129,15 +129,38 @@ public class newGame implements Command{
 	}
 	
 	// This method is an algorithm to generate, append text to output and then speaks the word to the user. - Victor
-	public void proceedToNextWord(String festivalMsg) {
-		String nextWord = generateRandomWord();
+	public void proceedToNextWord(String condition) {
 		
-		if (festivalMsg.equals("")) { // This is only for the first word of every spelling test session - Victor
-			_GUI.appendTxtField(nextWord);
+		String festivalMsg = "";
+		
+		// Changed below a bit to allow syncing of Festival and text output - Victor
+		if (!condition.equals("failed")) {
+			festivalMsg = "Correct!";
 		} else {
-			textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \""+festivalMsg+"\")'", nextWord);
+			festivalMsg = "Incorrect!";
+		}	
+		
+		// this is necessary to ensure the next word is not read out after 10 iterations or word.size()
+		// is met
+		if(_iterations == NUM_WORDS_TESTED || _words.size()-1 < _iterations){
+			_GUI.appendTxtField("No more words to cover.");
+			textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \""+festivalMsg+"\")'", "");
+		} else {
+			
+			String nextWord = generateRandomWord();
+			
+			if (condition.equals("")) { // This is only for the first word of every spelling test session - Victor
+				_GUI.appendTxtField(nextWord);
+			} else {
+				textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \""+festivalMsg+"\")'", nextWord);
+			}
+			spell(); // asks -tts to say the word outloud
+			
 		}
-		spell(); // asks -tts to say the word outloud
+		
+		
+		
+		
 	}
 
 	public void textToSpeech(String command, String msgOutput){
@@ -270,18 +293,9 @@ public class newGame implements Command{
 				}
 			}
 		}
-		// this is necessary to ensure the next word is not read out after 3 iterations or word.size()
-		// is met
-		if(_iterations == NUM_WORDS_TESTED || _words.size()-1 < _iterations){
-			_GUI.appendTxtField("No more words to cover.");
-		} else {
-			
-			// Changed below a bit to allow syncing of Festival and text output - Victor
-			if (!condition.equals("failed")) {
-				proceedToNextWord("Correct!");
-			} else {
-				proceedToNextWord("Incorrect!");
-			}		
-		}
+		
+		// Refactored the code previously here inside proceedToNextWord, so that it may say "Correct/Incorrect" for the last word. - Victor
+		proceedToNextWord(condition);
+		
 	}
 }

@@ -61,6 +61,7 @@ public class spellingGUI extends GUI implements ActionListener{
 		txtOutput.setEditable(false);
 		progressBar.setStringPainted(true);
 		spellingPanel.setLayout(new BorderLayout());
+		txt.addActionListener(this);
 		btnEnter.addActionListener(this); 
 		btnBack.addActionListener(this);
 		btnRelisten.addActionListener(this);
@@ -226,15 +227,14 @@ public class spellingGUI extends GUI implements ActionListener{
 							String levelMasteredMsg = levelCompleteMsg + " Well done for mastering 9 or more words!";
 							btnVideo.setEnabled(true);
 							if (!modelController._level.equals("%Level 11")) {
-								JOptionPane.showMessageDialog(null, levelMasteredMsg + " You may now choose to watch a reward video. No more levels available to progress.");
 								btnAdvanceLevel.setEnabled(true);
-							} else {
 								JOptionPane.showMessageDialog(null, levelMasteredMsg + " You may now choose to watch a reward video or move onto the next level.");
+							} else {
+								JOptionPane.showMessageDialog(null, levelMasteredMsg + " You may now choose to watch a reward video. No more levels available to progress.");
 							}
 						} else {
 							JOptionPane.showMessageDialog(null, levelCompleteMsg + " Unfortunately you need to master at least 9 or more words to watch the reward video and progressing to the next level. Better luck next time!");
 						}
-						btnStart.setEnabled(true);
 						modelController.execute();
 					}
 				}
@@ -253,8 +253,11 @@ public class spellingGUI extends GUI implements ActionListener{
 			modelController.setLevel("%Level "+(Integer.parseInt(modelController._level.split(" ")[1])+1));
 			modelController.execute();
 			btnAdvanceLevel.setEnabled(false);
+			btnStart.doClick();
 		} else if (e.getSource() == btnVideo) {
 			new MediaPlayer("big_buck_bunny_1_minute.avi").setupGUI();
+		} else if (e.getSource() == txt) {
+			btnEnter.doClick();
 		}
 	}
 

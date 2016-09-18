@@ -168,7 +168,8 @@ public class newGame implements Command{
 		 * this function builds a process which is executed within the bash shell
 		 */
 		_GUI.btnRelisten.setEnabled(false);
-		VoiceWorker voice = new VoiceWorker(command, _GUI.btnRelisten, this, _GUI, msgOutput);
+		_GUI.btnEnter.setEnabled(false);
+		VoiceWorker voice = new VoiceWorker(command, _GUI.btnRelisten, _GUI.btnEnter, this, _GUI, msgOutput);
 		//voice.execute();
 		
 		_threadPool.submit(voice);

@@ -220,12 +220,19 @@ public class spellingGUI extends GUI implements ActionListener{
 					}
 					// reset the iterations, and text field, and send them back to the MAIN gui.
 					if(iterations == 10 || modelController.getWordListSize() < iterations){
+						String levelCompleteMsg = "Level complete.";
 						iterations = 0;
 						if(modelController._wordsCorrect > 8){
+							String levelMasteredMsg = levelCompleteMsg + " Well done for mastering 9 or more words!";
 							btnVideo.setEnabled(true);
 							if (!modelController._level.equals("%Level 11")) {
+								JOptionPane.showMessageDialog(null, levelMasteredMsg + " You may now choose to watch a reward video. No more levels available to progress.");
 								btnAdvanceLevel.setEnabled(true);
+							} else {
+								JOptionPane.showMessageDialog(null, levelMasteredMsg + " You may now choose to watch a reward video or move onto the next level.");
 							}
+						} else {
+							JOptionPane.showMessageDialog(null, levelCompleteMsg + " Unfortunately you need to master at least 9 or more words to watch the reward video and progressing to the next level. Better luck next time!");
 						}
 						btnStart.setEnabled(true);
 						modelController.execute();
@@ -238,7 +245,7 @@ public class spellingGUI extends GUI implements ActionListener{
 			txtOutput.setText("");
 			modelController.proceedToNextWord("");
 			txt.setEditable(true);
-			btnEnter.setEnabled(true);
+			btnEnter.setEnabled(false);
 			btnStart.setEnabled(false);
 		} else if (e.getSource() == festivalSelect){
 			modelController.setVoice((String)festivalSelect.getSelectedItem());

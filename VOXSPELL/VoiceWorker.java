@@ -1,21 +1,21 @@
 package VOXSPELL;
 
-import java.util.concurrent.CountDownLatch;
-
 import javax.swing.JButton;
 import javax.swing.SwingWorker;
 
 public class VoiceWorker extends SwingWorker<Void,Void> {
 	String _command;
 	JButton _btn;
+	JButton _btn2;
 	newGame _ng;
 	spellingGUI _GUI;
 	String _outputMsg;
 
 	// Now this also takes a String for the purpose of outputting next word on txtField after Festival finishes - Victor
-	public VoiceWorker(String command, JButton btn,  newGame ng, spellingGUI GUI, String outputMsg) { // Modified the constructor to take newGame as parameter - Victor
+	public VoiceWorker(String command, JButton btn,  JButton btn2, newGame ng, spellingGUI GUI, String outputMsg) { // Modified the constructor to take newGame as parameter - Victor
 		_command = command;
 		_btn = btn;
+		_btn2 = btn2;
 		_ng = ng;
 		_GUI = GUI;
 		_outputMsg = outputMsg;
@@ -40,6 +40,7 @@ public class VoiceWorker extends SwingWorker<Void,Void> {
 	protected void done(){
 		//_ng.countDown(); // Counts down the latch, freeing it for the next Festival call - Victor
 		_btn.setEnabled(true);
+		_btn2.setEnabled(true);
 		_GUI.appendTxtField(_outputMsg); // Added this to sync text appending after Festival completes - Victor
 		
 	}

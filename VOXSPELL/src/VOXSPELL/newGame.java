@@ -263,6 +263,9 @@ public class newGame implements Command{
 					teachSpelling();
 					proceedToNextWord("");
 					return;
+				} else {
+					proceedToNextWord("");
+					return;
 				}
 			}
 		}

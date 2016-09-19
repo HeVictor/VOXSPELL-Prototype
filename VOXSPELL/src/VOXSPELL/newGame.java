@@ -18,7 +18,7 @@ public class newGame implements Command{
 	private List<String> _words = new ArrayList<String>();
 	private spellingGUI _GUI;
 	private String _currentWord = "";
-	private boolean _review;
+	protected boolean _review;
 	private int _iterations = 0;
 	private List<Integer> _wordIndex = new ArrayList<Integer>();
 	protected String _level = "%Level 1";
@@ -63,6 +63,7 @@ public class newGame implements Command{
 		}
 		// setting the wordList to the required spelling list
 		if(_words.size() == 0){
+			_GUI.btnStart.setEnabled(false);
 			_GUI.setTxtField("No words to revise. \nPress back to return to main menu.");
 		} else if (_words.size() >= NUM_WORDS_TESTED){
 			this._listSize = NUM_WORDS_TESTED;
@@ -112,9 +113,9 @@ public class newGame implements Command{
 		String festivalMsg = "";
 		
 		// Changed below a bit to allow syncing of Festival and text output - Victor
-		if (!condition.equals("failed")) {
+		if (condition.equals("mastered") || condition.equals("faulted")) {
 			festivalMsg = "Correct!";
-		} else {
+		} else if (condition.equals("failed")){
 			festivalMsg = "Incorrect!";
 		}	
 		
@@ -259,7 +260,8 @@ public class newGame implements Command{
 			if(_review){
 				textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \"Incorrect!\")'",""); // Moved code around - Victor
 				if(_GUI.promptUserToRelisten()){
-					teachSpelling(); 
+					teachSpelling();
+					proceedToNextWord("");
 					return;
 				}
 			}

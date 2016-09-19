@@ -63,6 +63,7 @@ public class fileHandler {
 			fileName.write(toAdd);
 			fileName.newLine();
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -77,16 +78,17 @@ public class fileHandler {
 
 			BufferedWriter fileToWrite = new BufferedWriter(new FileWriter(tempFile, true));
 			BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFile));
-			String word = null;
+			String word = "";
 			while((word = bufferedReader.readLine()) != null) {
 				if(!word.equals(toRemove)){
 					appendingFile(fileToWrite, word);
 				}
 			}
 			bufferedReader.close();
-			inputFile.delete();
+			fileToWrite.close();
 			tempFile.renameTo(inputFile);
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

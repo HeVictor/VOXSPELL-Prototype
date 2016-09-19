@@ -42,7 +42,7 @@ public class spellingGUI extends GUI implements ActionListener{
 	private JButton btnBack = new JButton("Back");
 	protected JButton btnRelisten = new JButton("Relisten");
 	private JComboBox<String> festivalSelect;
-	private JButton btnStart = new JButton("Start");
+	JButton btnStart = new JButton("Start");
 	private JLabel spellingVoiceLabel = new JLabel("Speaking Voices");
 	private JProgressBar progressBar = new JProgressBar();
 	private JButton btnVideo = new JButton("Play Video Reward"); 
@@ -186,6 +186,8 @@ public class spellingGUI extends GUI implements ActionListener{
 				festivalSelect.setSelectedIndex(0);
 				progressBar.setValue(0);
 				progressBar.setString("");
+				btnAdvanceLevel.setEnabled(false);
+				btnVideo.setEnabled(false);
 				mediator.sendUpdateToGUI("MAIN"); // sends them back to the main menu GUI
 			}
 		} else if(e.getSource().equals(btnEnter)) {
@@ -229,11 +231,11 @@ public class spellingGUI extends GUI implements ActionListener{
 						mediator.updateSideStats(this.modelController._level, false);
 					}
 					// reset the iterations, and text field, and send them back to the MAIN gui.
-					if(iterations == 10 || modelController.getWordListSize() < iterations){
+					if(iterations == 10 || modelController.getWordListSize() == iterations){
 						String levelCompleteMsg = "Level complete.";
 						btnRelisten.setEnabled(false);
 						iterations = 0;
-						if(modelController._wordsCorrect > 8){
+						if(modelController._wordsCorrect > 8 && !modelController._review){
 							String levelMasteredMsg = levelCompleteMsg + " Well done for mastering 9 or more words!";
 							btnVideo.setEnabled(true);
 							if (!modelController._level.equals("%Level 11")) {
@@ -242,7 +244,7 @@ public class spellingGUI extends GUI implements ActionListener{
 							} else {
 								JOptionPane.showMessageDialog(null, levelMasteredMsg + " You may now choose to watch a reward video. No more levels available to progress.");
 							}
-						} else {
+						} else if (!modelController._review) {
 							JOptionPane.showMessageDialog(null, levelCompleteMsg + " Unfortunately you need to master at least 9 or more words to watch the reward video and progressing to the next level. Better luck next time!");
 						}
 						modelController.execute();

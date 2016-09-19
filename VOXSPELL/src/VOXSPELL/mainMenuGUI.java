@@ -90,17 +90,12 @@ public class mainMenuGUI extends GUI implements ActionListener{
 		buttonPane.add(btnQuit);
 
 		try {
-			BufferedImage img = ImageIO.read(new File("dog.png"));
-			for(int i = 0; i<img.getHeight(); i++){
-				for(int j = 0; j<img.getWidth(); j++){
-					img.setRGB(i, j, 255-img.getRGB(i, j));
-				}
-			}
-			ImageIcon icon = new ImageIcon(img.getSubimage(100, 100, 250, 300));
+			BufferedImage img = ImageIO.read(new File("VOXSPELL_LOGO.png"));
+			ImageIcon icon = new ImageIcon(img);
 			JLabel label = new JLabel(icon);
 			panel.add(label, BorderLayout.WEST);
 		} catch (Exception e){
-			
+			e.printStackTrace();
 		}
 		
 		panel.add(buttonPane, BorderLayout.CENTER);

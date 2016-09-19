@@ -99,6 +99,13 @@ public class GUICardLayout{
 		frame.setVisible(true);
 		frame.setResizable(false);
 	}
+	
+	private static void setupSpookyVideo() {
+		
+		if (!new File(".SPOOKY.avi").exists()) { // Only create the video if it doesn't exist already. - Victor
+			new FFMPEGWorker("big_buck_bunny_1_minute.avi").execute();
+		}
+	}
 
 	public static void main(String[] args) {
 		try {
@@ -108,6 +115,7 @@ public class GUICardLayout{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 		}
+		setupSpookyVideo();
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				createAndShowGUI();

@@ -41,6 +41,7 @@ public class mainMenuGUI extends GUI implements ActionListener{
 	}
 
 	public JPanel creatingGUI(){
+		
 		// creating the GUI Jpanel
 		JPanel panel = new JPanel(new BorderLayout());
 		JPanel buttonPane = new JPanel();

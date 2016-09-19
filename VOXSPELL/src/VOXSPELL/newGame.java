@@ -77,7 +77,7 @@ public class newGame implements Command{
 		/*
 		 * merely sends a string for the process builder to read through text to speech
 		 */
-		textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \"Please spell "+_currentWord+"\")'", "");
+		textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \"Please spell "+_currentWord+"\")'", "", true);
 	}
 
 	// Now this method only generates and returns a random word and sets current word - Victor
@@ -122,8 +122,7 @@ public class newGame implements Command{
 		// this is necessary to ensure the next word is not read out after 10 iterations or word.size()
 		// is met
 		if(_iterations == NUM_WORDS_TESTED || _words.size()-1 < _iterations){
-			_GUI.appendTxtField("No more words to cover.");
-			textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \""+festivalMsg+"\")'", "");
+			textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \""+festivalMsg+"\")'", "No more words to cover.",false);
 		} else {
 			
 			String nextWord = generateRandomWord();
@@ -131,14 +130,14 @@ public class newGame implements Command{
 			if (condition.equals("")) { // This is only for the first word of every spelling test session - Victor
 				_GUI.appendTxtField(nextWord);
 			} else {
-				textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \""+festivalMsg+"\")'", nextWord);
+				textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \""+festivalMsg+"\")'", nextWord,false);
 			}
 			spell(); // asks -tts to say the word outloud
 			
 		}
 	}
 
-	public void textToSpeech(String command, String msgOutput){
+	public void textToSpeech(String command, String msgOutput, boolean btnEnable){
 		/*
 		 * this function builds a process which is executed within the bash shell
 		 */
@@ -146,7 +145,7 @@ public class newGame implements Command{
 		// being generated.
 		_GUI.btnRelisten.setEnabled(false);
 		_GUI.btnEnter.setEnabled(false);
-		VoiceWorker voice = new VoiceWorker(command, _GUI.btnRelisten, _GUI.btnEnter, this, _GUI, msgOutput);
+		VoiceWorker voice = new VoiceWorker(command, _GUI.btnRelisten, _GUI.btnEnter, this, _GUI, msgOutput, btnEnable);
 		
 		_threadPool.submit(voice);
 	}
@@ -226,11 +225,21 @@ public class newGame implements Command{
 	// Refactored this into a method - Victor
 	private void teachSpelling() {
 		// changed below to only do one Festival call to solve overlap - Victor
-		textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \"This is how you spell: "+_currentWord+"\")'","");
+		textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \"This is how you spell: "+_currentWord+"\")'","",false);
+		
+		int wordLength = _currentWord.toCharArray().length;
+		int charCount = 0;
+		boolean btnEnable = false;
 		// sends a batch command to festival through the process builder to set the voice, and say the current word - Jacky
 		for(char c:_currentWord.toCharArray()){
-			textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \""+c+"\")'","");
+			
+			if (charCount == wordLength - 1 && _iterations < _listSize) { // This makes sure that Relisten/Enter is only enabled for non-last words and after the spelling is finished. - Victor
+				btnEnable = true;
+			}
+			
+			textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \""+c+"\")'","",btnEnable);
 			// speaking each letter individual - SayText has an inherent gap between each call.
+			charCount++;
 		}
 	}
 	
@@ -258,7 +267,7 @@ public class newGame implements Command{
 		} else if(condition.equals("failed")){
 			writeWordToFile(".failed.txt");
 			if(_review){
-				textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \"Incorrect!\")'",""); // Moved code around - Victor
+				textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \"Incorrect!\")'","",false); // Moved code around - Victor
 				if(_GUI.promptUserToRelisten()){
 					teachSpelling();
 					proceedToNextWord("");

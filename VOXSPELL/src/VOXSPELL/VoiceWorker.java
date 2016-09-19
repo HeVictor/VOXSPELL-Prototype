@@ -10,26 +10,23 @@ public class VoiceWorker extends SwingWorker<Void,Void> {
 	newGame _ng;
 	spellingGUI _GUI;
 	String _outputMsg;
+	boolean _btnEnable;
 
 	// Now this also takes a String for the purpose of outputting next word on txtField after Festival finishes - Victor
-	public VoiceWorker(String command, JButton btn,  JButton btn2, newGame ng, spellingGUI GUI, String outputMsg) { // Modified the constructor to take newGame as parameter - Victor
+	public VoiceWorker(String command, JButton btn,  JButton btn2, newGame ng, spellingGUI GUI, String outputMsg, boolean btnEnable) { // Modified the constructor to take newGame as parameter - Victor
 		_command = command;
 		_btn = btn;
 		_btn2 = btn2;
 		_ng = ng;
 		_GUI = GUI;
 		_outputMsg = outputMsg;
+		_btnEnable = btnEnable;
 	}
 
 	@Override
 	protected Void doInBackground() throws Exception {
 		ProcessBuilder pb = new ProcessBuilder("bash", "-c",  _command);
 		try {
-			
-			//CountDownLatch waitSignal = _ng.getLatch(); // Gets the local Latch from newGame - Victor
-			
-			//waitSignal.await(); // Waits for last Festival call to properly finish if there was one - Victor
-			//_ng.activateLatch(); // Activate the local latch to one count in newGame - Victor
 			Process process = pb.start();
 			process.waitFor(); // waiting for the process to finish
 		} catch (Exception e) {
@@ -38,9 +35,11 @@ public class VoiceWorker extends SwingWorker<Void,Void> {
 	}
 	
 	protected void done(){
-		//_ng.countDown(); // Counts down the latch, freeing it for the next Festival call - Victor
-		_btn.setEnabled(true);
-		_btn2.setEnabled(true);
+		
+		// This enables the buttons manually as dictated by specific Festival calls. - Victor
+		_btn.setEnabled(_btnEnable);
+		_btn2.setEnabled(_btnEnable);
+		
 		_GUI.appendTxtField(_outputMsg); // Added this to sync text appending after Festival completes - Victor
 		
 	}

@@ -83,7 +83,7 @@ public class spellingGUI extends GUI implements ActionListener{
 		
 		txt.setPreferredSize(new Dimension(200, 40));
 		JScrollPane scroll = new JScrollPane(txtOutput);
-		scroll.setPreferredSize(new Dimension(300, 250));
+		scroll.setPreferredSize(new Dimension(340, 250));
 
 		JPanel textPanel = new JPanel();
 		textPanel.setLayout(new BorderLayout());
@@ -180,6 +180,7 @@ public class spellingGUI extends GUI implements ActionListener{
 			if(PromptResult == 0){
 				btnStart.setEnabled(true);
 				btnRelisten.setEnabled(false);
+				btnEnter.setEnabled(false);
 				iterations  = 0;
 				txtOutput.setText("");
 				modelController.setVoice(this.festivalSelect.getItemAt(0));
@@ -217,8 +218,8 @@ public class spellingGUI extends GUI implements ActionListener{
 						mediator.updateSideStats(this.modelController._level, false);
 					} else if(count == 0){
 						// this is if they've failed the word the first try
-						modelController.textToSpeech("festival -b '(voice_"+modelController.getVoice()+")' '(SayText \"Incorrect, try once more: "+modelController.getCurrentWord()+"\")'", "");
-						modelController.textToSpeech("festival -b '(voice_"+modelController.getVoice()+")' '(SayText \""+modelController.getCurrentWord()+"\")'", "");
+						modelController.textToSpeech("festival -b '(voice_"+modelController.getVoice()+")' '(SayText \"Incorrect, try once more: "+modelController.getCurrentWord()+"\")'", "",false);
+						modelController.textToSpeech("festival -b '(voice_"+modelController.getVoice()+")' '(SayText \""+modelController.getCurrentWord()+"\")'", "",true);
 						txtOutput.append("Incorrect, try once more: ");
 						count++;
 					}
@@ -235,17 +236,26 @@ public class spellingGUI extends GUI implements ActionListener{
 						String levelCompleteMsg = "Level complete.";
 						btnRelisten.setEnabled(false);
 						iterations = 0;
-						if(modelController._wordsCorrect > 8 && !modelController._review){
-							String levelMasteredMsg = levelCompleteMsg + " Well done for mastering 9 or more words!";
-							btnVideo.setEnabled(true);
-							if (!modelController._level.equals("%Level 11")) {
-								btnAdvanceLevel.setEnabled(true);
-								JOptionPane.showMessageDialog(null, levelMasteredMsg + " You may now choose to watch a reward video or move onto the next level.");
+						
+						if (!modelController._review) {
+							if(modelController._wordsCorrect > 8){
+								String levelMasteredMsg = levelCompleteMsg + " Well done for mastering 9 or more words!";
+								btnVideo.setEnabled(true);
+								if (!modelController._level.equals("%Level 11")) {
+									btnAdvanceLevel.setEnabled(true);
+									JOptionPane.showMessageDialog(null, levelMasteredMsg + " You may now choose to watch a reward video or move onto the next level.");
+								} else {
+									JOptionPane.showMessageDialog(null, levelMasteredMsg + " You may now choose to watch a reward video. No more levels available to progress.");
+								}
+							} else if (modelController._wordsCorrect == 0) {
+								int promptResult = JOptionPane.showConfirmDialog(null, "You've unlocked a secret, \"spooky\" version of the reward video! Would you like to watch?", "Hidden Reward!",
+										JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+								if (promptResult == 0) {
+									new MediaPlayer(".SPOOKY.avi",true).setupGUI();
+								}
 							} else {
-								JOptionPane.showMessageDialog(null, levelMasteredMsg + " You may now choose to watch a reward video. No more levels available to progress.");
+								JOptionPane.showMessageDialog(null, levelCompleteMsg + " Unfortunately you need to master at least 9 or more words to watch the reward video and progressing to the next level. Better luck next time!");
 							}
-						} else if (!modelController._review) {
-							JOptionPane.showMessageDialog(null, levelCompleteMsg + " Unfortunately you need to master at least 9 or more words to watch the reward video and progressing to the next level. Better luck next time!");
 						}
 						modelController.execute();
 						btnStart.setEnabled(true);
@@ -270,7 +280,7 @@ public class spellingGUI extends GUI implements ActionListener{
 			btnAdvanceLevel.setEnabled(false);
 			btnStart.doClick();
 		} else if (e.getSource() == btnVideo) {
-			new MediaPlayer("big_buck_bunny_1_minute.avi").setupGUI();
+			new MediaPlayer("big_buck_bunny_1_minute.avi",false).setupGUI();
 		} else if (e.getSource() == txt) {
 			btnEnter.doClick();
 		}

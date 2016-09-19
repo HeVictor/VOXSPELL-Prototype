@@ -67,14 +67,23 @@ public class MediaPlayer extends JFrame implements ActionListener, WindowListene
 	
 	private EmbeddedMediaPlayer rewardVideo = _player.getMediaPlayer();
 	
+	private boolean _playSpookyVideo;
+	
 	// Code below sampled from FrameDemo.java from Java Tutorials at oracle.com
-	public MediaPlayer(String videoName) {
-		super("Enjoy your Reward!");
+	public MediaPlayer(String videoName, boolean playSpookyVideo) {
+		super();
 		_videoName = videoName;
+		_playSpookyVideo = playSpookyVideo;
 	}
 	
 	// Code below semi-sampled from SOFTENG206's VLCJ ACP tutorial. This sets up the main media player GUI.
 	public void setupGUI() {
+		
+		if (_playSpookyVideo == true) {
+			this.setTitle("Spooky Video!");
+		} else {
+			this.setTitle("Enjoy your Reward!");
+		}
         
 		// Sets up the video inside the JFrame.
         JPanel panel = new JPanel(new BorderLayout());

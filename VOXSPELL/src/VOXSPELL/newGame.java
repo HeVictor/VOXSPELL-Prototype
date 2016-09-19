@@ -42,6 +42,9 @@ public class newGame implements Command{
 	}
 
 	public void execute() {
+		
+		_GUI.btnStart.setEnabled(true);
+		
 		this._voiceSelected = _GUI.getVoiceField();
 		this._wordsCorrect = 0;
 		this._iterations = 0;

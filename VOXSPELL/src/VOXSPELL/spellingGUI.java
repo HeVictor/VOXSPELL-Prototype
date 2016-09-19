@@ -258,7 +258,6 @@ public class spellingGUI extends GUI implements ActionListener{
 							}
 						}
 						modelController.execute();
-						btnStart.setEnabled(true);
 					}
 				}
 			}

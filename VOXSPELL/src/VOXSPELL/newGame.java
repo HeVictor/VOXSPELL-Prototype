@@ -122,7 +122,8 @@ public class newGame implements Command{
 		// this is necessary to ensure the next word is not read out after 10 iterations or word.size()
 		// is met
 		if(_iterations == NUM_WORDS_TESTED || _words.size()-1 < _iterations){
-			textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \""+festivalMsg+"\")'", "No more words to cover.",false);
+			_GUI.appendTxtField("No more words to cover.");
+			textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \""+festivalMsg+"\")'", "",false);
 		} else {
 			
 			String nextWord = generateRandomWord();

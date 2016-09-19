@@ -203,7 +203,7 @@ public class newGame implements Command{
 		}
 		char[] characters = userInput.toCharArray();
 		for(char c: characters){
-			if(!Character.isLetter(c) && (c != '\'') ){
+			if(!Character.isLetter(c) && (c != '\'') && (!Character.isWhitespace(c))){
 				return false;
 			}
 		}

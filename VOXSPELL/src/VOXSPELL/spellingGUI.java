@@ -149,24 +149,24 @@ public class spellingGUI extends GUI implements ActionListener{
 		btnAdvanceLevel.setMaximumSize(new Dimension(btnVideo.getMinimumSize().width, btnVideo.getMinimumSize().height));
 		btnPanel.add(btnAdvanceLevel);
 
-		JPanel thirdPanel = new JPanel();
-		thirdPanel.setLayout(new BorderLayout());
-		thirdPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-		thirdPanel.add(txt, BorderLayout.CENTER);
-		thirdPanel.add(btnEnter, BorderLayout.EAST);
+		JPanel btnTextPanel = new JPanel();
+		btnTextPanel.setLayout(new BorderLayout());
+		btnTextPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+		btnTextPanel.add(txt, BorderLayout.CENTER);
+		btnTextPanel.add(btnEnter, BorderLayout.EAST);
 
-		JPanel fourthPanel = new JPanel();
-		fourthPanel.setLayout(new BoxLayout(fourthPanel, BoxLayout.X_AXIS));
+		JPanel topBtnPanel = new JPanel();
+		topBtnPanel.setLayout(new BoxLayout(topBtnPanel, BoxLayout.X_AXIS));
 		btnBack.setPreferredSize(new Dimension(20, 20));
-		fourthPanel.add(btnBack);
-		fourthPanel.add(btnStart);
-		fourthPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-		fourthPanel.add(currentLevel);
+		topBtnPanel.add(btnBack);
+		topBtnPanel.add(btnStart);
+		topBtnPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+		topBtnPanel.add(currentLevel);
 
 		spellingPanel.add(textPanel, BorderLayout.LINE_START);
 		spellingPanel.add(btnPanel, BorderLayout.EAST);
-		spellingPanel.add(thirdPanel, BorderLayout.SOUTH);
-		spellingPanel.add(fourthPanel, BorderLayout.NORTH);
+		spellingPanel.add(btnTextPanel, BorderLayout.SOUTH);
+		spellingPanel.add(topBtnPanel, BorderLayout.NORTH);
 		
 		return spellingPanel;
 	}

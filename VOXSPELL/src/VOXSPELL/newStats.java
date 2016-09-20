@@ -22,6 +22,9 @@ public class newStats implements Command{
 	public void execute() {
 		generateMap();
 		generateScore();
+		for(int i = 1; i<=11; i++){
+			generateLevelStats(""+i);
+		}
 		sortByAlphabetical();
 	}
 	
@@ -130,4 +133,27 @@ public class newStats implements Command{
 		}
 	}
 
+	private void generateLevelStats(String level){
+		List<String> levelWords = new ArrayList<String>();
+		List<String> wordsStats = new ArrayList<String>();
+		int[] failedSuccess = {0,0};
+		levelWords = new fileHandler().getWordList("NZCER-spelling-lists.txt", "%Level "+level);
+		wordsStats = new fileHandler().getWordList(".stats.txt", null);
+		for(String e: levelWords){
+			for(String d:wordsStats){
+				if((e+": .mastered.txt").equals(d)){
+					failedSuccess[1]++;
+					failedSuccess[0]++;
+				} else if ((e+": .faulted.txt").equals(d) || (e+": .failed.txt").equals(d)){
+					failedSuccess[0]++;
+				}
+			}
+		}
+		if(failedSuccess[0] != 0){
+			_GUI.showAccuracy(" Level "+level+": "+(float)failedSuccess[1]/failedSuccess[0]*100+"%\n");
+		} else {
+			_GUI.showAccuracy(" Level "+level+": \n");
+		}
+	}
+	
 }

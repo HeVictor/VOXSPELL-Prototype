@@ -251,7 +251,7 @@ public class spellingGUI extends GUI implements ActionListener{
 								int promptResult = JOptionPane.showConfirmDialog(null, "You've unlocked a secret, \"spooky\" version of the reward video! Would you like to watch?", "Hidden Reward!",
 										JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 								if (promptResult == 0) {
-									new MediaPlayer(".SPOOKY.avi",true).setupGUI();
+									new MediaPlayer(".media/SPOOKY.avi",true).setupGUI();
 								}
 							} else {
 								JOptionPane.showMessageDialog(null, levelCompleteMsg + " Unfortunately you need to master at least 9 or more words to watch the reward video and progressing to the next level. Better luck next time!");
@@ -279,7 +279,7 @@ public class spellingGUI extends GUI implements ActionListener{
 			btnAdvanceLevel.setEnabled(false);
 			btnStart.doClick();
 		} else if (e.getSource() == btnVideo) {
-			new MediaPlayer("big_buck_bunny_1_minute.avi",false).setupGUI();
+			new MediaPlayer(".media/big_buck_bunny_1_minute.avi",false).setupGUI();
 		} else if (e.getSource() == txt) {
 			btnEnter.doClick();
 		}

@@ -35,13 +35,13 @@ import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
 public class MediaPlayer extends JFrame implements ActionListener, WindowListener, MediaPlayerEventListener{
 	
-	private static final String PLAY_IMAGE = "PLAY.png";
-	private static final String PAUSE_IMAGE = "PAUSE.png";
-	private static final String RWD_IMAGE = "RWD.png";
-	private static final String FFW_IMAGE = "FFW.png";
-	private static final String STOP_IMAGE = "STOP.png";
-	private static final String MUTED_IMAGE = "MUTED.png";
-	private static final String UNMUTED_IMAGE = "UNMUTED.png";
+	private static final String PLAY_IMAGE = ".media/PLAY.png";
+	private static final String PAUSE_IMAGE = ".media/PAUSE.png";
+	private static final String RWD_IMAGE = ".media/RWD.png";
+	private static final String FFW_IMAGE = ".media/FFW.png";
+	private static final String STOP_IMAGE = ".media/STOP.png";
+	private static final String MUTED_IMAGE = ".media/MUTED.png";
+	private static final String UNMUTED_IMAGE = ".media/UNMUTED.png";
 	
 	private EmbeddedMediaPlayerComponent _player = new EmbeddedMediaPlayerComponent();
 	private String _videoName;

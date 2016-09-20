@@ -23,7 +23,7 @@ public class FFMPEGWorker extends SwingWorker<Void,Void>{
 		// Inverting colours filtering retrieved from http://randombio.com/linuxsetup141.html
 		// Adjusting video and audio speed retrieved from https://trac.ffmpeg.org/wiki/How%20to%20speed%20up%20/%20slow%20down%20a%20video
 		// Specifically, the video is manipulated to be halved the speed and the colours inverted, to create a "spooky" effect.
-		String command = "ffmpeg -y -i big_buck_bunny_1_minute.avi -filter_complex \"[0:v]setpts=2*PTS,lutrgb=r=negval:g=negval:b=negval[v];[0:a]atempo=0.5[a]\" -map \"[v]\" -map \"[a]\" .SPOOKY.avi";
+		String command = "ffmpeg -y -i .media/big_buck_bunny_1_minute.avi -filter_complex \"[0:v]setpts=2*PTS,lutrgb=r=negval:g=negval:b=negval[v];[0:a]atempo=0.5[a]\" -map \"[v]\" -map \"[a]\" .media/SPOOKY.avi";
 		
 		ProcessBuilder builder = new ProcessBuilder("bash","-c",command);
 		

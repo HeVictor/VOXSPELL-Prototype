@@ -34,6 +34,8 @@ public class newGame implements Command{
 	private int _listSize = 0;
 	private static final String LIST_FILE_NAME = "NZCER-spelling-lists.txt"; // The constant name of the word list - Victor
 	public static final int NUM_WORDS_TESTED = 10; // A constant of num words to be tested, refactored - Victor
+	private String stringToCheck = "";
+	
 	
 	private ExecutorService _threadPool;
 
@@ -86,7 +88,7 @@ public class newGame implements Command{
 		/*
 		 * merely sends a string for the process builder to read through text to speech
 		 */
-		textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \"Please spell "+_currentWord+"\")'", "", true);
+		textToSpeech("festival -b '(voice_"+_voiceSelected+")' '(SayText \"Please spell "+stringToCheck+"\")'", "", true);
 	}
 
 	// Now this method only generates and returns a random word and sets current word - Victor
@@ -95,6 +97,7 @@ public class newGame implements Command{
 		 * this method generates random words from the wordList obtained - it cannot repeat
 		 * previous words within the same session
 		 */
+		stringToCheck = "";
 		if(_words.size() > 0){
 			int randomWord = (int) Math.ceil(Math.random()*_words.size()-1);
 			while(_wordIndex.contains(randomWord)){ // this checks that the word has not been previously assessed
@@ -103,6 +106,11 @@ public class newGame implements Command{
 			_wordIndex.add(randomWord);
 			_currentWord = _words.get(randomWord);
 			_GUI.resetSpelling();
+			for(int i = 0; i<_currentWord.toCharArray().length; i++){
+				if(!(_currentWord.toCharArray()[i]+"").equals("'")){
+					stringToCheck=stringToCheck+_currentWord.toCharArray()[i];
+				}
+			}
 			if(_words.size() >= NUM_WORDS_TESTED){
 				// makes a call to the view to update the progress of the jprogressbar - jacky
 				_GUI.setJProgress(0, NUM_WORDS_TESTED, this._wordsCorrect);
@@ -111,7 +119,6 @@ public class newGame implements Command{
 				_GUI.setJProgress(0, _words.size(), this._wordsCorrect);
 				return "Spell word "+(_iterations+1)+" of "+_words.size()+": "; // Changed to cater for user input display - Victor
 			}
-			
 		}
 		return null;
 	}
@@ -162,7 +169,7 @@ public class newGame implements Command{
 	}
 
 	public String getCurrentWord(){
-		return _currentWord;
+		return stringToCheck;
 	}
 
 	public boolean isCorrect(String answer){

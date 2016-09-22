@@ -11,6 +11,11 @@ package VOXSPELL;
 import java.util.ArrayList;
 import java.util.List;
 
+import VOXSPELL.spelling.newGame;
+import VOXSPELL.spelling.spellingGUI;
+import VOXSPELL.stats.CurrentStatsGUI;
+import VOXSPELL.stats.viewStatsGUI;
+
 public class GUIMediator {
 	private List<GUI> _GUIList = new ArrayList<GUI>(); //storing all associated GUIs
 	private GUICardLayout _mainGUI; // the GUI frame we want to update
@@ -43,7 +48,6 @@ public class GUIMediator {
 	}
 	
 	public void updateSideStats(String level, boolean success){
-		// updates the side panel of current stats
 		for(GUI gui: _GUIList){
 			if(gui instanceof CurrentStatsGUI){
 				CurrentStatsGUI sidePanel = (CurrentStatsGUI) gui;

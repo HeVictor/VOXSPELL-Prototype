@@ -27,6 +27,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import VOXSPELL.spelling.newGame;
+import VOXSPELL.stats.clearStats;
+import VOXSPELL.stats.newStats;
+
 public class mainMenuGUI extends GUI implements ActionListener{
 	private JButton btnNewGame = new JButton("New Game"); 
 	private JButton btnReview = new JButton("Review Mistakes"); 

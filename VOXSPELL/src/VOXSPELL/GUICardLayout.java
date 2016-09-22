@@ -20,6 +20,13 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 
+import VOXSPELL.spelling.spellingGUI;
+import VOXSPELL.stats.CurrentStatsGUI;
+import VOXSPELL.stats.currentStats;
+import VOXSPELL.stats.viewStatsGUI;
+import VOXSPELL.swingworker.FFMPEGWorker;
+
+
 public class GUICardLayout{
 	JPanel cards;
 	private spellingGUI spelling;

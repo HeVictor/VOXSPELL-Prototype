@@ -20,7 +20,7 @@ import java.util.List;
 public class fileHandler {
 	String[] _files = {".mastered.txt",".stats.txt",".failed.txt",".faulted.txt"};
 
-	protected void writeToFile(String fileName, String currentWord){
+	public void writeToFile(String fileName, String currentWord){
 		// this method writes to the specified fileName - it checks if the word exists yet or not
 		// if it does, it will then add it. it will also add the word to stats along with whether
 		// it was faulted, failed, or mastered.
@@ -67,7 +67,7 @@ public class fileHandler {
 		}
 	}
 
-	protected void removingWord(String fileName, String toRemove){
+	public void removingWord(String fileName, String toRemove){
 		/*
 		 * this method finds a string in a file and removes it from the file - removing the blank space
 		 * too. it uses a temporary file to do this.
@@ -92,7 +92,7 @@ public class fileHandler {
 		}
 	}
 
-	protected void clearStats(){
+	public void clearStats(){
 		/*
 		 * reset all the statistics by recreating the files.
 		 */
@@ -104,28 +104,6 @@ public class fileHandler {
 		} catch (IOException e) {
 		}
 	}
-
-	/*public List<String> getWordList(String fileName) {
-		/*
-		 * retrieve the word list associated with a file.
-		 */
-	/*
-		String word = null;
-		List<String> words = new ArrayList<String>();
-		FileReader fileReader;
-		try {
-
-			fileReader = new FileReader(fileName);
-			BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-			while((word = bufferedReader.readLine()) != null) {
-				words.add(word);
-			}   
-			bufferedReader.close();         
-		} catch (Exception e){
-		}
-		return words;
-	}*/
 	
 	
 	/* A rewritten getWordList method to take level as a parameter to process new wordlist format. Original, single
